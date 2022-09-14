@@ -38,11 +38,13 @@ int main() {
 int eh_primo(int n) {
     int div, p = 1;
 
-    for(div = 2; (div*div <= n)&&(p); div++) {
-        if(n % div == 0) {
-            p = 0;
-        }
+    if (n == 1) return 0;
+    else {   
+        for(div = 2; (div*div <= n)&&(p); div++) {
+            if(n % div == 0) {
+                p = 0;
+            }
+        } 
+        return (p == 1);
     }
-    if(n == 1) return 0;
-    else return (p == 1);
 }
