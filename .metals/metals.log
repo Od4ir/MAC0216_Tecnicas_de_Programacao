@@ -1,0 +1,9 @@
+2022.09.16 20:37:35 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /workspaces/EP1-MAC0216/.metals/lsp.trace.json or /home/codespace/.cache/metals/lsp.trace.json
+2022.09.16 20:37:35 INFO  logging to file /workspaces/EP1-MAC0216/.metals/metals.log
+2022.09.16 20:37:35 INFO  Started: Metals version 0.11.8 in workspace '/workspaces/EP1-MAC0216' for client Visual Studio Code 1.71.2.
+2022.09.16 20:37:36 WARN  Flyway upgrade recommended: H2 2.1.214 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.1.210.
+2022.09.16 20:37:37 INFO  time: initialize in 1.7s
+2022.09.16 20:37:39 WARN  Build server is not auto-connectable.
+2022.09.16 20:37:39 WARN  no build tool detected in workspace '/workspaces/EP1-MAC0216'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2022.09.16 20:38:09 WARN  no build tool detected in workspace '/workspaces/EP1-MAC0216'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2022.09.16 20:38:12 WARN  no build tool detected in workspace '/workspaces/EP1-MAC0216'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 

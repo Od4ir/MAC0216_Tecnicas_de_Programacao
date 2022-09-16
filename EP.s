@@ -43,8 +43,6 @@ fim:
 
 
 section .bss   
-primo     resb 1
-div       resw 
 
 
 section .data
