@@ -1,0 +1,93 @@
+Aula 1/30
+07/08/2023 - SEG 
+
+
+- Conteúdo:
+    Objetivos: Expor conceitos e ambientes de programaçãoe e integração de módulos
+    e programas;
+
+    Início - Linguagem de montagem (baixo nível);
+    Meio - Uso de ferramentas de uso operacional e de desenvolvimento de software;
+        Técnicas para auxiliar na programação;
+        Agilidade;
+        Testes;
+    Fim - Príncipios de orientação ao objeto;
+
+
+    Tópicos abordados:
+        - Arquitetura de computadores;
+            - Linguagem de montagem;
+        - Integração com o SO;
+        - Gerenciamento de compilação;
+        - Modularização de Código;
+        - Bibliotecas;
+        - Documentação;
+        - Testes e depuração;
+        - Controle de versão;
+        - C, Python, C++, Bashscript e Assembly;
+        
+- Informações Gerais:
+    - 30 Aulas no total;
+    - 13/12 é a última aula;
+        - Aplicação da P2;
+
+
+- Tarefas e Cálculo da Nota:
+    - EPS:
+        Entrega até às 8h;
+        EP1 - 28/8 - Assembly
+        EP2 - 2/10 - Bashscript
+        EP3 - 30/10 - Biblioteca
+        EP4 - 27/11 - Orientação ao Objeto e Documentação
+
+    - Provas:
+        P1 - 9/10
+        02 - 13/12
+
+    - Questões ao fim das aulas de segunda feira (10 no Total);
+
+    - Média Final:
+        MQ - Média das Questões;
+            Considerando as 7 notas mais altas;
+
+        MP - Média das 2 provas;
+            Uma delas pode ser substítuida pela MQ se a P2 não for feita;
+
+        Se entregar todos os EPS e a MP >= 5 E MEP >= 5:
+            MF = (MP + MEP) / 2
+        Se entregar todos os EPS e a MP < 5 ou MEP < 5
+            MF  = min(MP, MEP)
+        Se não entregar todos os EPS:
+            MF = 0;
+
+        PRec - Prova de Recuperação
+            MRec = (MF + 2 * PRec) / 3
+
+        Frequência:
+            - Mais de 70% de presença;
+                - Reprovação por falta;
+                - Precisa vir em 20 aulas;
+                     - Posso faltar 8 aulas;
+
+- Calendário:
+    - 8 Aulas;
+    - Pausa (Semana da Pátria);
+    - 2 Aulas;
+    - Pausa (Conferência);
+    - 15 Aulas;
+    - Pausa (Feriados);
+    - 3 Aulas;
+    - Pausa (Conferência);
+    - 2 Aulas;
+
+    - Pode faltar na Semana da Computação - Comprovando que estava em alguma palestra;
+    - Semana do Break do BCC vai ter aula;
+
+
+- Bibliografia:
+    - Linux Assembly Language Programming;
+    - Python in a Nutshell;
+    - The Practice of Programming;
+    - Object - Oriented Analysis and Design with Applications;
+    - Advanced Bash - Scripting Guide;
+
