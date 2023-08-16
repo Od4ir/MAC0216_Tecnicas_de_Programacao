@@ -1,7 +1,0 @@
- .text - Onde fica o código fonte; Seção só de leitura;
- .bss - Onde ficam os dados e variáveis não inicializados;
- .data - Onde ficam os dados e variáveis;
-
-
-
- 
