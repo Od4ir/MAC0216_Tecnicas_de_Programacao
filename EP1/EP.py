@@ -57,9 +57,9 @@ def main():
 
     saidaPassoDois = []
     saidaPassoDois += saidaPassoUm + novoBloco
-    
 
-    """ ---- PASSP 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
+
+    """ ---- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
 
 
 
