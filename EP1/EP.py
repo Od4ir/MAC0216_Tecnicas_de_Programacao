@@ -1,4 +1,4 @@
-TAM = 16
+SIZE_BLOCO = 16
 vetorMagico = [122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 114, 236, 106, 83, 117, 16, 189, 211, 51, 231, 143, 118, 248, 148, 218,
 245, 24, 61, 66, 73, 205, 185, 134, 215, 35, 213, 41, 0, 174, 240, 177,
@@ -23,11 +23,11 @@ def main():
 
     # Parâmetros importantes:
     tam_entrada = len(string_entrada)
-    num_blocos = int(tam_entrada / TAM)
+    num_blocos = int(tam_entrada / SIZE_BLOCO)
 
-    if num_blocos * TAM < tam_entrada:
+    if num_blocos * SIZE_BLOCO < tam_entrada:
         num_blocos = num_blocos + 1
-    new_pos = TAM * num_blocos - tam_entrada
+    new_pos = SIZE_BLOCO * num_blocos - tam_entrada
     # new_pos - Indica quantos espaços em um dos blocos serão preenchidos com alguma informação aleatória;
 
 
@@ -39,9 +39,8 @@ def main():
         saidaPassoUm.append(ord(string_entrada[i]))
     
     # Preenchendo os espaços até ter um múltiplo de 16 com: 16 - tam_entrada % 16
-    print("Posições a serem preenchidas: ", new_pos, '\n')
     for i in range(new_pos):
-        saidaPassoUm.append(TAM - tam_entrada % TAM)
+        saidaPassoUm.append(SIZE_BLOCO - tam_entrada % SIZE_BLOCO)
 
 
 
@@ -51,36 +50,33 @@ def main():
     novoValor = 0
 
     for i in range(num_blocos):
-        for j in range(TAM):
-            novoValor = vetorMagico[(saidaPassoUm[i * TAM + j] ^ novoValor)] ^ novoBloco[j]
+        for j in range(SIZE_BLOCO):
+            novoValor = vetorMagico[(saidaPassoUm[i * SIZE_BLOCO + j] ^ novoValor)] ^ novoBloco[j]
             novoBloco[j] = novoValor
 
     saidaPassoDois = []
     saidaPassoDois += saidaPassoUm + novoBloco
 
-
     """ ---- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
+    saidaPassoTres = [0] * (SIZE_BLOCO * 3)
 
-
-
-    """ 
-     for i in range(len(saidaPassoUm)):
-        print(i, ": ", saidaPassoUm[i])
-
-    print(saidaPassoUm) 
-
-    for i in range(len(vetorMagico)):
-        print(vetorMagico[i])
-
-    print(saidaPassoUm)
-    print(novoBloco)
-
-    print(saidaPassoDois)
-    """ 
-
-
-    
+    for i in range(num_blocos + 1):
+        for j in range(SIZE_BLOCO):
+            saidaPassoTres[SIZE_BLOCO + j] = saidaPassoDois[i * SIZE_BLOCO + j]
+            saidaPassoTres[2 * SIZE_BLOCO + j] = (saidaPassoTres[SIZE_BLOCO + j] ^ saidaPassoTres[j])
+        temp = 0
+        for j in range(SIZE_BLOCO + 2):
+            for k in range(SIZE_BLOCO * 3):
+                temp = saidaPassoTres[k] ^ vetorMagico[temp]
+                saidaPassoTres[k] = temp
+            temp = (temp + j) % 256
     
 
+    """ ----- PASSO 4 - Definição do Hash como um valor hexadecimal ----- """
+    hexac = ''
+    for i in range(SIZE_BLOCO):
+        hexac += hex(saidaPassoTres[i])[2:]
+        
+    print(hexac)
 
 main()
