@@ -17,6 +17,8 @@ vetorMagico = [122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 68, 43, 120, 228, 169, 112, 54, 250, 129, 46, 188, 196, 85, 150, 6, 254,
 180, 233, 230, 31, 76, 55, 18, 9, 32, 82, 70]
 
+vetorhex = [0, 1, 2, 3, 4, 5, 6 ,7 ,8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
+
 def main():
     # Lendo a entrada:
     string_entrada = input("Digite uma string: ")
@@ -74,9 +76,20 @@ def main():
 
     """ ----- PASSO 4 - Definição do Hash como um valor hexadecimal ----- """
     hexac = ''
+
     for i in range(SIZE_BLOCO):
-        hexac += hex(saidaPassoTres[i])[2:]
+        # Convertendo valor em hexadecimal:
+        hex_atu = saidaPassoTres[i]
+        div = hex_atu // SIZE_BLOCO
+        resto = hex_atu % SIZE_BLOCO
+        hexac += str(vetorhex[div]) + str(vetorhex[resto])
         
     print(hexac)
 
 main()
+
+#c090a10ded215a7297b69d86d81e25a
+#c0900a10ded215a7297b69d86d81e25a
+#7ea2319be0d038908161b4e8c26bfc7a
+
+
