@@ -1,7 +1,7 @@
 global _start
 
 section .data
-    str:        db "Digite alguma mensagem: ", 0xA
+    str:        db "Digite alguma string: ", 0xA
     str_size:   equ $ - str
 
     STDIN:      equ 0
@@ -9,8 +9,8 @@ section .data
 
 
 section .bss
-    buf:        resb 64
-    buf_size:   equ 64
+    buf:        resb 100001
+    buf_size:   equ 100001
 
 
 section .text
@@ -21,7 +21,7 @@ impressao1:
         MOV RAX, 1
         MOV RDI, STDOUT
         MOV RSI, str
-        MOV rdx, str_size
+        MOV RDX, str_size
         syscall
 
 leitura:
@@ -35,10 +35,18 @@ leitura:
 impressao2:
         ; Após a leitura, RAX guarda o número de bytes que foram lidos;
         MOV RBX, RAX
+        MOV R8, RAX
 
         MOV RAX, 1
         MOV RDI, STDOUT
         MOV RSI, buf
+        MOV RDX, RBX
+        syscall
+
+        
+        MOV RAX, 1
+        MOV RDI, STDOUT
+        MOV RSI, dword[buf]
         MOV RDX, RBX
         syscall
 
