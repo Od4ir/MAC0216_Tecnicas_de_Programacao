@@ -25,15 +25,15 @@ def main():
 
     # Parâmetros importantes:
     tam_entrada = len(string_entrada)
-    num_blocos = int(tam_entrada / SIZE_BLOCO)
+    num_blocos = tam_entrada // SIZE_BLOCO
 
-    if num_blocos * SIZE_BLOCO < tam_entrada:
+    if tam_entrada % SIZE_BLOCO != 0:
         num_blocos = num_blocos + 1
-    new_pos = SIZE_BLOCO * num_blocos - tam_entrada
-    # new_pos - Indica quantos espaços em um dos blocos serão preenchidos com alguma informação aleatória;
-
-
+    
     """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
+
+    new_pos = SIZE_BLOCO - tam_entrada % SIZE_BLOCO
+    # new_pos - Indica quantos espaços em um dos blocos serão preenchidos com alguma informação aleatória;
 
     # Colocando em uma lista o código em ASCII de cada caractere da entrada:
     saidaPassoUm = []
@@ -41,8 +41,9 @@ def main():
         saidaPassoUm.append(ord(string_entrada[i]))
     
     # Preenchendo os espaços até ter um múltiplo de 16 com: 16 - tam_entrada % 16
-    for i in range(new_pos):
-        saidaPassoUm.append(SIZE_BLOCO - tam_entrada % SIZE_BLOCO)
+    if new_pos != 16:
+        for i in range(new_pos):
+            saidaPassoUm.append(SIZE_BLOCO - tam_entrada % SIZE_BLOCO)
 
 
 
