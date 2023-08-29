@@ -19,38 +19,24 @@ vetorMagico = [122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 
 vetorhex = [0, 1, 2, 3, 4, 5, 6 ,7 ,8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
 
-def passo1()
-
-def main():
-    # Lendo a entrada:
-    string_entrada = input("Digite uma string: ")
-
-    # Parâmetros importantes:
-    tam_entrada = len(string_entrada)
-    num_blocos = tam_entrada // SIZE_BLOCO
-
-    if tam_entrada % SIZE_BLOCO != 0:
-        num_blocos = num_blocos + 1
-    
-    """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
-
+def passo1(str_entrada):
+    tam_entrada = len(str_entrada)
     new_pos = SIZE_BLOCO - tam_entrada % SIZE_BLOCO
     # new_pos - Indica quantos espaços em um dos blocos serão preenchidos com alguma informação aleatória;
 
     # Colocando em uma lista o código em ASCII de cada caractere da entrada:
     saidaPassoUm = []
-    for i in range(len(string_entrada)):
-        saidaPassoUm.append(ord(string_entrada[i]))
+    for i in range(len(str_entrada)):
+        saidaPassoUm.append(ord(str_entrada[i]))
     
     # Preenchendo os espaços até ter um múltiplo de 16 com: 16 - tam_entrada % 16
     if new_pos != 16:
         for i in range(new_pos):
             saidaPassoUm.append(SIZE_BLOCO - tam_entrada % SIZE_BLOCO)
 
+    return saidaPassoUm, new_pos
 
-
-    """ ----- PASSO 2 - Cálculo e Contanação dos XOR ----- """
-
+def passo2(num_blocos, saidaPassoUm):
     novoBloco = [0] * 16
     novoValor = 0
 
@@ -61,8 +47,9 @@ def main():
 
     saidaPassoDois = []
     saidaPassoDois += saidaPassoUm + novoBloco
+    return saidaPassoDois
 
-    """ ---- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
+def passo3(num_blocos, saidaPassoDois):
     saidaPassoTres = [0] * (SIZE_BLOCO * 3)
 
     for i in range(num_blocos + 1):
@@ -75,9 +62,10 @@ def main():
                 temp = saidaPassoTres[k] ^ vetorMagico[temp]
                 saidaPassoTres[k] = temp
             temp = (temp + j) % 256
-    
 
-    """ ----- PASSO 4 - Definição do Hash como um valor hexadecimal ----- """
+    return saidaPassoTres
+    
+def passo4(saidaPassoTres):
     hexac = ''
 
     for i in range(SIZE_BLOCO):
@@ -86,9 +74,37 @@ def main():
         div = hex_atu // SIZE_BLOCO
         resto = hex_atu % SIZE_BLOCO
         hexac += str(vetorhex[div]) + str(vetorhex[resto])
-        
+    
+    return hexac
+
+
+def main():
+    # Lendo a entrada:
+    string_entrada = input("Digite uma string: ")
+
+    # Tamanho da entrada:
+    tam_entrada = len(string_entrada)
+
+    num_blocos = tam_entrada // SIZE_BLOCO
+
+    if tam_entrada % SIZE_BLOCO != 0:
+        num_blocos = num_blocos + 1
+
+    """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
+
+    saidaPassoUm, new_pos = passo1(string_entrada)
+
+    """ ----- PASSO 2 - Cálculo e Contanação dos XOR ----- """
+
+    saidaPassoDois = passo2(num_blocos, saidaPassoUm)
+
+    """ ---- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
+
+    saidaPassoTres = passo3(num_blocos, saidaPassoDois)
+
+    """ ----- PASSO 4 - Definição do Hash como um valor hexadecimal ----- """
+
+    hexac = passo4(saidaPassoTres)
     print(hexac)
 
 main()
-
-
