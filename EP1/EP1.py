@@ -32,7 +32,7 @@ def passo1(str_entrada):
     # Preenchendo os espaços até ter um múltiplo de 16 com: 16 - tam_entrada % 16
     if new_pos != 16:
         for i in range(new_pos):
-            saidaPassoUm.append(SIZE_BLOCO - tam_entrada % SIZE_BLOCO)
+            saidaPassoUm.append(new_pos)
 
     return saidaPassoUm, new_pos
 
@@ -43,6 +43,8 @@ def passo2(num_blocos, saidaPassoUm):
     for i in range(num_blocos):
         for j in range(SIZE_BLOCO):
             novoValor = vetorMagico[(saidaPassoUm[i * SIZE_BLOCO + j] ^ novoValor)] ^ novoBloco[j]
+            print()
+            print(novoValor)
             novoBloco[j] = novoValor
 
     saidaPassoDois = []
@@ -92,15 +94,15 @@ def main():
 
     """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
 
-    saidaPassoUm, new_pos = passo1(string_entrada)
+    saida, new_pos = passo1(string_entrada)
 
     """ ----- PASSO 2 - Cálculo e Contanação dos XOR ----- """
 
-    saidaPassoDois = passo2(num_blocos, saidaPassoUm)
+    saida = passo2(num_blocos, saida)
 
     """ ---- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
 
-    saidaPassoTres = passo3(num_blocos, saidaPassoDois)
+    saidaPassoTres = passo3(num_blocos, saida)
 
     """ ----- PASSO 4 - Definição do Hash como um valor hexadecimal ----- """
 

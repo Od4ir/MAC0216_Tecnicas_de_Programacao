@@ -14,3 +14,4 @@ Para debugar usando o gdb:
     info r                          // Mostra o que está dentro de cada registrador
     p $registrador                  // Mostra o valor específico de um registrador
     print variavel                  // Mostra o valor da variável
+    x/3c &Sample

@@ -17,12 +17,15 @@ section .bss
     buf:            resb 100001
     buf_size:       equ 100001
     num_blocos:     resq 1
-    new_pos:        resb 1
-    saidaPassoUm:   resb 100001
+    new_pos:        resq 1
+    saida:          resb 100017
+    novoBloco:      resb 16
+    novoValor:      resb 1
 
 ; ----- CÓDIGO: -----
 section .text
 
+; ////////////// ----- SUBROTINA - IMPRESSÃO ----- //////////////
 impressao:
         ; Chamada do write() para imprimir o conteúdo da 'str' na tela:
         MOV RAX, 1
@@ -32,6 +35,7 @@ impressao:
         syscall  
         ret 
 
+; ////////////// ----- SUBROTINA - LEITURA ----- //////////////
 leitura:
         ; Chamada da leitura para ler um conteúdo do terminal;
         MOV RAX, 0
@@ -41,28 +45,99 @@ leitura:
         syscall
         ret
 
+
+; ////////////// ----- SUBROTINA - PASSO 1 ----- //////////////
 passo1:
-        ; 'new_pos' guarda quantas posições do novo bloco precisão ser 
+        ; 'new_pos' guarda quantas posições do novo bloco precisarão serem
         ; preenchidas com alguma informação aleatória.
-        ; Note que se RDX == 0, 'new_pos' == '6.
-p1:     MOV R9, SIZE_BLOCO
+        ; Note que se RDX == 0, então 'new_pos' == 16.
+        MOV R9, SIZE_BLOCO
         SUB R9, RDX
         MOV [new_pos], R9    
 
-        ; Vamos percorrer a entrada e salvar os valores na 'saidaPassoUm'.
+        ; Vamos percorrer a entrada e salvar os valores na 'saida'.
         ; Lembrando que R8 = nº de caracteres da entrada;
         MOV RCX, 0
 loop1:  MOV AL, byte[buf + RCX]
-        MOV byte[saidaPassoUm + RCX], AL
+        MOV byte[saida + RCX], AL
         INC RCX
         CMP RCX, R8
         JNE loop1
 
+        ; Se 'new_pos' == 16, não precisamos preencher o vetor 'saida' 
+        ; com mais nada e podemos sair sa subrotina;
+        MOV R9, SIZE_BLOCO
+        CMP R9, new_pos         
+        JE fim1          
+
+        ; Se 'new_pos' != 16, precisamos preencher as novas posições com 
+        ; 16 - (tamanho % 16), que é o mesmo valor de 'new_pos':        
+        MOV R9, 0
+        ADD R9, R8               ; Coloca o tamanho da entrada em R9;
+        ADD R9, [new_pos]        ; Em R9, temos o tamanho final da saida;
+        MOV AL, [new_pos]        ; Colocamos em AL o valor que vamos inserir na saída.
+loop2:  MOV byte[saida + RCX], AL
+        INC RCX
+        CMP RCX, R9              
+        JNE loop2
+
+fim1:   ret
+
+; ////////////// ----- SUBROTINA - PASSO 2 ----- //////////////
+passo2:
+        ; Vamos iniciar o novo valor e o vetor novoBloco com 0s;
+        MOV RBX, 0                 ; BX representa o 'novoValor';
+        MOV byte[novoValor], 0
+
+        MOV RCX, 0
+loop3:  MOV byte[novoBloco], 0
+        INC RCX
+        CMP RCX, 16
+        JNE loop3
+
+        XOR RAX, RAX
+        XOR RCX, RCX
+
+        MOV R10, -1
+loop7:  INC R10
+        CMP R10, num_blocos
+        JE add_new_bloco
+        MOV RCX, 0
+loop8:  MOV RAX, SIZE_BLOCO
+p:        MUL R10
+p2:        ADD RAX, RCX
+p3:        MOV DL, byte[saida + RAX]
+p4:        XOR DL, byte[novoValor]                  ; (saidaPassoUm[i * SIZE_BLOCO + j] ^ novoValor)
+p5:        MOV BL, [vetormagico + RDX]
+p6:        XOR BL, byte[novoBloco + RCX]
+p7:        MOV byte[novoValor], BL
+p8:        MOV byte[novoBloco + RCX], BL
+p9:        INC RCX
+p10:       CMP RCX, SIZE_BLOCO
+        JNE loop8
+        JMP loop7
+
+        ; R9 guarda o tamanho da 'saida'. Vamos adicionar 
+        ; 16 novos valores nesse vetor.
+add_new_bloco:
+        MOV RCX, R9
+        MOV RBX, 0
+        ADD R9, 16
+loop6:  MOV AL, byte[novoBloco + RBX]
+        MOV byte[saida + RCX], AL
+        INC RCX
+        INC RBX
+        CMP RBX, 16
+        JNE loop6
+        ret
+
+; ////////////// ----- SUBROTINA - SAÍDA ----- //////////////
 saida_programa:
         ; Saída do programa:
         mov rax, 60          ; chamada de sistema sys_exit
         mov rdi, 0           ; retorna 0 (sucesso)
         syscall              ; chamada ao sistema operacional
+
 
 
 _start:
@@ -91,7 +166,9 @@ _start:
 
 
         ; """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
-        call passo1
+ p1:    call passo1
+
+        call passo2
 
 
         call saida_programa
