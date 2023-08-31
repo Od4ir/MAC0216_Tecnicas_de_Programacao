@@ -43,12 +43,11 @@ def passo2(num_blocos, saidaPassoUm):
     for i in range(num_blocos):
         for j in range(SIZE_BLOCO):
             novoValor = vetorMagico[(saidaPassoUm[i * SIZE_BLOCO + j] ^ novoValor)] ^ novoBloco[j]
-            print()
-            print(novoValor)
             novoBloco[j] = novoValor
 
     saidaPassoDois = []
     saidaPassoDois += saidaPassoUm + novoBloco
+    print(saidaPassoDois[16:32])
     return saidaPassoDois
 
 def passo3(num_blocos, saidaPassoDois):
@@ -58,13 +57,20 @@ def passo3(num_blocos, saidaPassoDois):
         for j in range(SIZE_BLOCO):
             saidaPassoTres[SIZE_BLOCO + j] = saidaPassoDois[i * SIZE_BLOCO + j]
             saidaPassoTres[2 * SIZE_BLOCO + j] = (saidaPassoTres[SIZE_BLOCO + j] ^ saidaPassoTres[j])
+        print(i, ':', saidaPassoTres, '\n')
         temp = 0
         for j in range(SIZE_BLOCO + 2):
             for k in range(SIZE_BLOCO * 3):
+                if j <= 2:
+                    print(k, ': ', temp, '\n')
                 temp = saidaPassoTres[k] ^ vetorMagico[temp]
                 saidaPassoTres[k] = temp
+            #print(temp)
             temp = (temp + j) % 256
+            #print(j, ': ', temp, '\n')
+        print(i, '(2): ', saidaPassoTres, '\n\n')
 
+    print(saidaPassoTres)
     return saidaPassoTres
     
 def passo4(saidaPassoTres):
