@@ -1,5 +1,5 @@
 Para compilar um a.out:
-    nasm -f ef64 -g -o EP.o EP.s    // Isso cria um arquivo EP.o (Código Objeto)
+    nasm -f elf64 -g -o EP.o EP.s    // Isso cria um arquivo EP.o (Código Objeto)
     ld -s -o a.out EP.o             // Isso cria o executável a.out para rodar o programa;
     ./a.out                         // Isso roda o programa;
 
