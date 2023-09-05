@@ -17,10 +17,10 @@ section .data
 section .bss
     buf:            resb 100010
     buf_size:       equ 100010
-    num_blocos:     resq 2
+    num_blocos:     resq 3
     new_pos:        resq 2
     saida:          resb 100020
-    saida3: resb 48
+    saida3:         resb 48
     novoBloco:      resb 16
     novoValor:      resb 1
     hexac:          resb 35
@@ -62,7 +62,8 @@ leitura:
 passo1:
         ; 'new_pos' guarda quantas posições do novo bloco precisarão serem
         ; preenchidas com alguma informação aleatória.
-        ; Note que se RDX == 0, então 'new_pos' == 16.
+        ; Note que se RDX == 0, então 'new_pos' == SIZE_BLOCO.
+        ; RDX guarda o resto da divisão do tamanho_entrada pelo SIZE_BLOCO.
         MOV R9, SIZE_BLOCO
         SUB R9, RDX
         MOV [new_pos], R9    
@@ -79,8 +80,9 @@ loop1:  MOV AL, byte[buf + RCX]
         ; Se 'new_pos' == 16, não precisamos preencher o vetor 'saida' 
         ; com mais nada e podemos sair sa subrotina;
         MOV R9, SIZE_BLOCO
-        CMP R9, new_pos         
-        JE fim1          
+        CMP R9, [new_pos]  
+        MOV R9, R8       
+        JE  fim1       
 
         ; Se 'new_pos' != 16, precisamos preencher as novas posições com 
         ; 16 - (tamanho % 16), que é o mesmo valor de 'new_pos':        
@@ -138,12 +140,11 @@ loop4:  MOV RAX, SIZE_BLOCO
         ; *add_nb = Adicionando novo bloco;
 add_nb: MOV RCX, R9
         MOV RBX, 0
-        ADD R9, SIZE_BLOCO
 loop5:  MOV AL, byte[novoBloco + RBX]    ; Colocamos o caractere novoBloco[i] em AL
         MOV byte[saida + RCX], AL        ; Colocamos AL nas posições finais da 'saida'
         INC RCX
         INC RBX
-        CMP RBX, 16
+        CMP RBX, SIZE_BLOCO
         JNE loop5
         ret
 
@@ -284,16 +285,16 @@ _start:
         ; No fim, 'num_blocos' guarda o quociente;
         ; R8 vai guarda o tamanho para operações futuras;
         DEC RAX                         
-        MOV R8, RAX
+pin:        MOV R8, RAX
         MOV RBX, SIZE_BLOCO             
-        MOV RDX, 0                      
+pin2:        MOV RDX, 0                      
         DIV RBX
-        MOV [num_blocos], EAX  
+pin3:        MOV [num_blocos], EAX  
 
 
         ; Se o resto da divisão for zero, então num_blocos será suficiente;
         ; Se não, precisaremos de mais um bloco para o resto;
-        CMP EDX, 0
+pin4:        CMP EDX, 0
         JZ p1
         INC byte[num_blocos]
 

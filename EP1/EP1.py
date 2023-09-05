@@ -34,7 +34,7 @@ def passo1(str_entrada):
         for i in range(new_pos):
             saidaPassoUm.append(new_pos)
 
-    return saidaPassoUm, new_pos
+    return saidaPassoUm
 
 def passo2(num_blocos, saidaPassoUm):
     novoBloco = [0] * 16
@@ -92,11 +92,12 @@ def main():
 
     """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
 
-    saida, new_pos = passo1(string_entrada)
+    saida = passo1(string_entrada)
 
     """ ----- PASSO 2 - Cálculo e Contanação dos XOR ----- """
 
     saida = passo2(num_blocos, saida)
+
 
     """ ---- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
 
