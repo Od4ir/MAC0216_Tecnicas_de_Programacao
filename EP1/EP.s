@@ -22,13 +22,12 @@ section .bss
     saida:          resb 100020
     saida3:         resb 48
     novoBloco:      resb 16
-    novoValor:      resb 1
     hexac:          resb 35
 
 ; ----- CÓDIGO: -----
 section .text
 
-; ////////////// ----- SUBROTINA - IMPRESSÃO ----- //////////////
+; ////////////// ----- SUBROTINAS - IMPRESSÕES ----- //////////////
 impressao1:
         ; Chamada do write() para imprimir o conteúdo da 'str' na tela:
         MOV RAX, 1
@@ -39,11 +38,11 @@ impressao1:
         ret 
 
 impressao2:
-        ; Chamada do write() para imprimir o conteúdo da 'str' na tela:
+        ; Chamada do write() para imprimir o conteúdo de 'hexac' na tela:
         MOV RAX, 1
         MOV RDI, STDOUT
-        MOV RSI, saida
-        MOV RDX, R9
+        MOV RSI, hexac
+        MOV RDX, 35
         syscall  
         ret 
 
@@ -63,7 +62,7 @@ passo1:
         ; 'new_pos' guarda quantas posições do novo bloco precisarão serem
         ; preenchidas com alguma informação aleatória.
         ; Note que se RDX == 0, então 'new_pos' == SIZE_BLOCO.
-        ; RDX guarda o resto da divisão do tamanho_entrada pelo SIZE_BLOCO.
+        ;       * RDX guarda o resto da divisão do tamanho_entrada pelo SIZE_BLOCO.
         MOV R9, SIZE_BLOCO
         SUB R9, RDX
         MOV [new_pos], R9    
@@ -71,61 +70,57 @@ passo1:
         ; Vamos percorrer a entrada e salvar os valores na 'saida'.
         ; Lembrando que R8 = nº de caracteres da entrada;
         MOV RCX, 0
-loop1:  MOV AL, byte[buf + RCX]
+ loop1: MOV AL, byte[buf + RCX]
         MOV byte[saida + RCX], AL
         INC RCX
-        CMP RCX, R8
+        CMP RCX, R8              ; Verifica se o contador (RCX) == tamanho_entrada.
         JNE loop1
 
         ; Se 'new_pos' == 16, não precisamos preencher o vetor 'saida' 
         ; com mais nada e podemos sair sa subrotina;
         MOV R9, SIZE_BLOCO
         CMP R9, [new_pos]  
-        MOV R9, R8       
+        MOV R9, R8               ; Mas antes salvamos em R9 o tamanho da 'saida'.
         JE  fim1       
 
-        ; Se 'new_pos' != 16, precisamos preencher as novas posições com 
-        ; 16 - (tamanho % 16), que é o mesmo valor de 'new_pos':        
-        MOV R9, 0
-        ADD R9, R8               ; Coloca o tamanho da entrada em R9;
+        ; Se 'new_pos' != SIZE_BLOCO, precisamos preencher as novas posições com 
+        ; SIZE_BLOCO - (tamanho % SIZE_BLOCO), que é o mesmo valor de 'new_pos':        
         ADD R9, [new_pos]        ; Em R9, temos o tamanho final da saida;
         MOV AL, [new_pos]        ; Colocamos em AL o valor que vamos inserir na saída.
-loop2:  MOV byte[saida + RCX], AL
+ loop2: MOV byte[saida + RCX], AL
         INC RCX
-        CMP RCX, R9              
+        CMP RCX, R9              ; Verificamos se já chegamos ao final da 'saida' preenchida. 
         JNE loop2
 
-fim1:   ret
+ fim1:  ret
 
 ; ////////////// ----- SUBROTINA - PASSO 2 ----- //////////////
 passo2:
         ; O novo bloco já está preenchido com zeros;
-        ; O novoValor será iniciado com valor 0 e salvo em BL;
+        ; O novoValor será salvo em RBX.
         MOV RBX, 0
-        MOV byte[novoValor], 0
 
-        ; Zerando RAX e RCX para os processos seguintes;
+        ; Zerando RAX, RCX e RDX para os processos seguintes;
         XOR RAX, RAX
         XOR RCX, RCX
         XOR RDX, RDX
 
-
         ; Na passagem abaixo iremos fazer o seguinte:
-        ; for i (R10) de 0 até num_blocos:
-        ;       for j (RCX) de 0 até 16 (SIZE_BLOCO):
-        ;               novoValor = vetorMagico[(saidaPassoUm[i * SIZE_BLOCO + j] ^ novoValor)] ^ novoBloco[j]
-        ;               novoBloco[j] = novoValor
+        ; Para i (R10) de 0 até num_blocos:
+        ;       Para j (RCX) de 0 até SIZE_BLOCO:
+        ;               novoValor = vetorMagico[(saidaPassoUm[i * SIZE_BLOCO + j] ^ novoValor(RBX))] ^ novoBloco[j]
+        ;               novoBloco[j] = novoValor(RBX)
         
-        MOV R10, -1                      ; R10 vai de 0 até 'num_blocos'
-loop3:  INC R10
+        MOV R10, -1              ; R10 vai de 0 até 'num_blocos'
+ loop3: INC R10
         CMP R10, [num_blocos]
-        JE add_nb
-        MOV RCX, 0                       ; RCX vai de 0 até 16
-loop4:  MOV RAX, SIZE_BLOCO
+        JE addnb
+        MOV RCX, 0               ; RCX vai de 0 até 'SIZE_BLOCO'
+ loop4: MOV RAX, SIZE_BLOCO
         MUL R10                          
         ADD RAX, RCX                     ; Em RAX temos: i(R10) * SIZE_BLOCO + j(RCX)
         MOV DL, byte[saida + RAX]        ; Salvamos saidaPassoUm[RAX] em DL;
-        XOR DL, BL                       ; Fazemos saidaPassoUm[RAX] ^ novoValor(BL) que fica em RDX
+        XOR DL, BL                       ; Fazemos saidaPassoUm[RAX] ^ novoValor(BL) que fica salvo em RDX
         MOV BL, [vetormagico + RDX]      ; Salvamos vetorMagico[RDX] em BL
         XOR BL, byte[novoBloco + RCX]    ; Fazemos novoValor(BL) = vetorMagico[RDX] ^ novoBloco[j(RCX)]   
         XOR BH, BH      
@@ -137,10 +132,10 @@ loop4:  MOV RAX, SIZE_BLOCO
 
         ; R9 guarda o tamanho da 'saida'. Vamos adicionar 
         ; 16 novos valores nesse vetor que estão no 'novoBloco':
-        ; *add_nb = Adicionando novo bloco;
-add_nb: MOV RCX, R9
+        ;       *addnb = Adicionando novo bloco;
+ addnb: MOV RCX, R9
         MOV RBX, 0
-loop5:  MOV AL, byte[novoBloco + RBX]    ; Colocamos o caractere novoBloco[i] em AL
+ loop5: MOV AL, byte[novoBloco + RBX]    ; Colocamos o caractere novoBloco[i(RBX)] em AL
         MOV byte[saida + RCX], AL        ; Colocamos AL nas posições finais da 'saida'
         INC RCX
         INC RBX
@@ -150,8 +145,7 @@ loop5:  MOV AL, byte[novoBloco + RBX]    ; Colocamos o caractere novoBloco[i] em
 
 ; ////////////// ----- SUBROTINA - PASSO 3 ----- //////////////
 passo3:
-
-        INC byte[num_blocos]      ; Aumentamos em 1 o 'num_blocos' para comparações futuras;
+        INC byte[num_blocos]     ; Aumentamos em 1 o 'num_blocos' para comparações futuras;
 
         ; R12 = SIZE_BLOCO + 2
         ; R13 = SIZE_BLOCO * 3
@@ -173,59 +167,57 @@ passo3:
         ;                       // Executamos algumas ações;
         ;               temp(R10) = (temp(R10) + j(RCX)) % 256
         MOV R8, -1
-loop6:  INC R8
+ loop6: INC R8
         CMP R8, [num_blocos]
         JE fim3
 
         MOV RCX, -1
-loop7:  INC RCX
+ loop7: INC RCX
         CMP RCX, SIZE_BLOCO
         JE next
-        MOV RAX, SIZE_BLOCO              ; RAX = SIZE_BLOCO
-        MUL R8                           ; RAX = SIZE_BLOCO * i(R8)
-        ADD RAX, RCX                     ; RAX = SIZE_BLOCO * i(R8) + j(RCX)
+        MOV RAX, SIZE_BLOCO       ; RAX = SIZE_BLOCO
+        MUL R8                    ; RAX = SIZE_BLOCO * i(R8)
+        ADD RAX, RCX              ; RAX = SIZE_BLOCO * i(R8) + j(RCX)
 
-        MOV BL, byte[saida + RAX]        ; BL = saida[SIZE_BLOCO * i + j]
+        MOV BL, byte[saida + RAX]    ; BL = saida[SIZE_BLOCO * i + j]
 
-        ADD RCX, SIZE_BLOCO              ; RCX = SIZE_BLOCO + j
-        MOV byte[saida3 + RCX], BL       ; saida3[SIZE_BLOCO + j] = BL
+        ADD RCX, SIZE_BLOCO          ; RCX = SIZE_BLOCO + j
+        MOV byte[saida3 + RCX], BL   ; saida3[SIZE_BLOCO + j] = BL
 
-        SUB RCX, SIZE_BLOCO              ; Voltando RCX para seu valor correto;
-        XOR BL, byte[saida3 + RCX]       ; BL = saida3[SIZE_BLOCO + j] ^ saida3[j]
+        SUB RCX, SIZE_BLOCO          ; Voltando RCX para seu valor correto;
+        XOR BL, byte[saida3 + RCX]   ; BL = saida3[SIZE_BLOCO + j] ^ saida3[j]
 
         MOV RAX, SIZE_BLOCO
-        ADD RAX, RAX                     ; RAX = 2 * SIZE_BLOCO
-        ADD RAX, RCX                     ; RAX = 2 * SIZE_BLOCO + j
-        MOV byte[saida3 + RAX], BL       ; saida[2 * SIZE_BLOCO + j] = BL
+        ADD RAX, RAX                 ; RAX = 2 * SIZE_BLOCO
+        ADD RAX, RCX                 ; RAX = 2 * SIZE_BLOCO + j
+        MOV byte[saida3 + RAX], BL   ; saida[2 * SIZE_BLOCO + j] = BL
         JMP loop7
 
-next:   MOV R10, 0                       ; R10 é o 'temp'
+ next:  MOV R10, 0                ; R10 é o 'temp'
         MOV RCX, -1
-loop8:  INC RCX
-        CMP RCX, R12                     ; j(RCX) = SIZE_BLOCO + 2?
+ loop8: INC RCX
+        CMP RCX, R12              ; j(RCX) == SIZE_BLOCO + 2?
         JE loop6
  
         MOV R9, -1
-loop9:  INC R9   
-        CMP R9, R13                      ; k(R9) = SIZE_BLOCO * 3?
+ loop9: INC R9   
+        CMP R9, R13               ; k(R9) == SIZE_BLOCO * 3?
         JE next2
         MOV BL, byte[saida3 + R9]        
-        XOR BL, byte[vetormagico + R10]       ; BL = saida3[k] ^ saida3[temp]
-temp:   MOV R10, RBX                     ; Atualizando 'temp'
+        XOR BL, byte[vetormagico + R10]  ; BL = saida3[k] ^ saida3[temp]
+        MOV R10, RBX                     ; Atualizando 'temp'
         MOV byte[saida3 + R9], BL        ; saida3[k] = temp
         JMP loop9
-next2:  MOV RAX, R10
+ next2: MOV RAX, R10
         ADD RAX, RCX
-        DIV R14                          ; RAX = (temp + j) / 256
-        MOV R10, RDX                     ; temp = (temp + j) % 256
-next3:  JMP loop8
-        
-stoop3:
-fim3:   ret
+        DIV R14                   ; RAX = (temp + j) / 256
+        MOV R10, RDX              ; temp = (temp + j) % 256
+        JMP loop8
+ fim3:  ret
 
-
+; ////////////// ----- SUBROTINA - PASSO 4 ----- //////////////
 passo4:
-        ; Vamos converter os 16 primeiros valores da saída 3 em hexadecimal
+        ; Vamos converter os 'SIZE_BLOCO's primeiros valores da saída 3 em hexadecimal
         ; e salvar em hexac:
         MOV RCX, -1
         MOV R10, -1
@@ -236,7 +228,7 @@ passo4:
         ;       Salva em hexac[j] o primeiro caractere do hexadecimal;   
         ;       j++;
         ;       Salva em hexac[j] o segundo caractere do hexadecimal;
-loop10: INC RCX  
+ loop10:INC RCX  
         INC R10  
         CMP R10, SIZE_BLOCO
         JE fim4                       
@@ -252,18 +244,11 @@ loop10: INC RCX
         MOV byte[hexac + RCX], BL
         JMP loop10
 
-fim4:   INC RCX
-        MOV byte[hexac + RCX], 10
+ fim4:  INC RCX
+        MOV byte[hexac + RCX], 10     ; Coloca o '\n' no final da saída.
         ret
 
-impressao4:
-        ; Chamada do write() para imprimir o conteúdo da 'str' na tela:
-        MOV RAX, 1
-        MOV RDI, STDOUT
-        MOV RSI, hexac
-        MOV RDX, 35
-        syscall  
-        ret 
+
 
 
 ; ////////////// ----- SUBROTINA - SAÍDA ----- //////////////
@@ -299,8 +284,7 @@ _start:
         JZ p1
         INC byte[num_blocos]
 
-
-        call passo1
+ p1:    call passo1
 
         call passo2
 
@@ -308,6 +292,6 @@ _start:
 
         call passo4
 
-        call impressao4
+        call impressao2
 
         call saida_programa
