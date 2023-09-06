@@ -1,3 +1,6 @@
+""" EP1 - Código Python """
+
+# Varíaveis gerais:
 SIZE_BLOCO = 16
 vetorMagico = [122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 114, 236, 106, 83, 117, 16, 189, 211, 51, 231, 143, 118, 248, 148, 218,
@@ -19,6 +22,7 @@ vetorMagico = [122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 
 vetorhex = [0, 1, 2, 3, 4, 5, 6 ,7 ,8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
 
+# Função do passo 1, recebe a entrada (string) e devolve a saída do passo 1 (string):
 def passo1(str_entrada):
     tam_entrada = len(str_entrada)
     new_pos = SIZE_BLOCO - tam_entrada % SIZE_BLOCO
@@ -29,15 +33,17 @@ def passo1(str_entrada):
     for i in range(len(str_entrada)):
         saidaPassoUm.append(ord(str_entrada[i]))
     
-    # Preenchendo os espaços até ter um múltiplo de 16 com: 16 - tam_entrada % 16
-    if new_pos != 16:
+    # Preenchendo os espaços até ter um múltiplo de SIZE_BLOCO com: SIZE_BLOCO - tam_entrada % SIZE_BLOCO
+    if new_pos != SIZE_BLOCO:
         for i in range(new_pos):
             saidaPassoUm.append(new_pos)
 
     return saidaPassoUm
 
+# Função do passo 2, recebe a saida do passo 1 (string) e o número de blocos (int) e 
+# devolve a saída do passo 2 (string):
 def passo2(num_blocos, saidaPassoUm):
-    novoBloco = [0] * 16
+    novoBloco = [0] * SIZE_BLOCO
     novoValor = 0
 
     for i in range(num_blocos):
@@ -49,6 +55,8 @@ def passo2(num_blocos, saidaPassoUm):
     saidaPassoDois += saidaPassoUm + novoBloco
     return saidaPassoDois
 
+# Função do passo 3, recebe a saida do passo 2 (string) e o número de blocos (int) e
+# devolve a saída do passo 3 (string):
 def passo3(num_blocos, saidaPassoDois):
     saidaPassoTres = [0] * (SIZE_BLOCO * 3)
 
@@ -64,7 +72,9 @@ def passo3(num_blocos, saidaPassoDois):
             temp = (temp + j) % 256
 
     return saidaPassoTres
-    
+
+# Função do passo 4, recebe a saída do passo 3 (string), converte os primeiros 'SIZE_BLOCO's 
+# caracteres em hexadecimal e concatena-os para formar a string de saída
 def passo4(saidaPassoTres):
     hexac = ''
 
@@ -77,7 +87,7 @@ def passo4(saidaPassoTres):
     
     return hexac
 
-
+# Função principal:
 def main():
     # Lendo a entrada:
     string_entrada = input("Digite uma string: \n")
@@ -85,10 +95,13 @@ def main():
     # Tamanho da entrada:
     tam_entrada = len(string_entrada)
 
+    # Definindo quantos blocos de tamanho SIZE_BLOCO serão necessários:
     num_blocos = tam_entrada // SIZE_BLOCO
 
     if tam_entrada % SIZE_BLOCO != 0:
         num_blocos = num_blocos + 1
+
+    # Execução dos passos:
 
     """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
 
@@ -98,8 +111,7 @@ def main():
 
     saida = passo2(num_blocos, saida)
 
-
-    """ ---- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
+    """ ----- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
 
     saidaPassoTres = passo3(num_blocos, saida)
 

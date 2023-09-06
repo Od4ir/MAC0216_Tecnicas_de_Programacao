@@ -272,8 +272,9 @@ saida_programa:
         mov rax, 60          ; chamada de sistema sys_exit
         mov rdi, 0           ; retorna 0 (sucesso)
         syscall              ; chamada ao sistema operacional
+        
 
-
+; ////////////// ----- PARTE PRINCIPAL ----- //////////////
 _start:
         call impressao1
         call leitura
@@ -285,32 +286,28 @@ _start:
         ; No fim, 'num_blocos' guarda o quociente;
         ; R8 vai guarda o tamanho para operações futuras;
         DEC RAX                         
-pin:        MOV R8, RAX
+        MOV R8, RAX
         MOV RBX, SIZE_BLOCO             
-pin2:        MOV RDX, 0                      
+        MOV RDX, 0                      
         DIV RBX
-pin3:        MOV [num_blocos], EAX  
+        MOV [num_blocos], EAX  
 
 
         ; Se o resto da divisão for zero, então num_blocos será suficiente;
         ; Se não, precisaremos de mais um bloco para o resto;
-pin4:        CMP EDX, 0
+        CMP EDX, 0
         JZ p1
         INC byte[num_blocos]
 
 
-        ; """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
- p1:    call passo1
+        call passo1
 
         call passo2
-
-        ;call impressao2
 
         call passo3
 
         call passo4
 
         call impressao4
-
 
         call saida_programa
