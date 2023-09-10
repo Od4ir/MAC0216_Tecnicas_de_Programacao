@@ -1,0 +1,30 @@
+Usando time cat texto_.txt | python EP1.py
+10: 0.043s
+100: 0.039s
+1000: 0.047s
+10000: 0.115s
+100000: 0.377s
+
+time cat texto10.txt | ./a.out
+10: 0.005s
+100: 0.005s
+1000: 0.005s
+10000: 0.007s
+100000: 0.020s
+
+
+Usando time python EP1.py < texto_.txt
+10: 0.036s
+100: 0.037s
+1000: 0.045s
+10000: 0.112s
+100000: 0.371s
+
+time ./a.out < texto10.txt
+10: 0.003s
+100: 0.003s
+1000: 0.004s
+10000: 0.006s
+100000: 0.028s
+
+Respostas diferentes usando o cat e o < 
