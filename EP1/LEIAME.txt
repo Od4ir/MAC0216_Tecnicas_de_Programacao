@@ -1,0 +1,100 @@
+AUTOR:
+    Nome: Odair Gonçalves de Oliveira
+    Nº USP: 13671581
+    Email: od4ir@gmail.com
+
+
+DESCRIÇÃO:
+    Este projeto consiste no Exercício Programa I (EP1) da disciplina MAC 0216
+    Técnicas de Programação, orientada pelo professor Daniel Macedo Batista, no
+    curso de Ciência da Computação do Instituto de Mamemática e Estatística da
+    Universidade de São Paulo (IME - USP). 
+    O projeto consiste em dois programas escritos em 2 linguagens diferentes:
+    Python e Assembly. Os programas recebem um texto passado como entrada pelo
+    terminal e devolvem um código de 32 caracteres utilizando os dígitos do sis-
+    tema hexadecimal que é construído utilizando o texto dado como entrada.
+
+COMO GERAR O EXECUTÁVEL:
+    Para gerar o executável (a.out) em Assembly, basta digitar no terminal:
+    > nasm -f elf64 -g -o EP.o EP.sis
+    > ld -s -o a.out EP.o 
+
+    * Lembrando que esse programa foi feito pensando numa arquitetura x86_64.
+
+
+COMO EXECUTAR:
+    /////////// PYTHON: ///////////
+        Para o código em Python, basta digitar no terminal:
+            :~$ python ep1.py
+
+        Após isso, irá aparecer na tela:
+            :~$ Digite uma string: 
+
+        Basta digitar o texto desejado e pressionar enter para produzir o 
+        código que será semelhante ao expost a seguir:
+            :~$ abcdef1234567890abcdef1234567890
+
+        Para passar um arquivo, por exemplo, 'textoexemplo.txt' como entrada,
+        basta digitar no terminal:
+            :~$ python ep1.py < textoexemplo.txt
+
+        A saída nesse caso será:
+            :~$ Digite uma string:
+            :~$ < Código de 32 caracteres gerado >
+
+    /////////// ASSEMBLY: ///////////
+        Para o código em Assembly, após gerar o executável basta digitar no 
+        terminal:
+            :~$ ./a.out 
+        
+        Após isso, irá aparecer na tela:
+            :~$ Digite uma string:
+        
+        E assim como o código em Python, basta digitar a string, pressionar 
+        enter e verificar o código gerado na saída. 
+        Para exemplos utilizando arquivo, basta digitar no terminal:
+            :~$ ./a.out < textoexemplo.txt
+
+
+TESTES:
+    Veja a seguir alguns exemplos de testes e suas respectivas saídas esperadas:
+
+    /////////// EXEMPLO 1: ///////////
+        :~$ python EP1.py
+        Digite uma string: 
+        Pandas sao fofos
+        8d7af7c76a92c8369d2b6f69b2fcb234
+
+        :~$ ./a.out 
+        Digite alguma string: 
+        Pandas sao fofos
+        8d7af7c76a92c8369d2b6f69b2fcb234
+
+    /////////// EXEMPLO 2: ///////////
+        :~$ python EP1.py
+        Digite uma string: 
+        Por favor me de uma nota boa
+        58a078fa420bd0994c6bcf03e0b00a9b
+
+        :~$ ./a.out 
+        Digite alguma string: 
+        Por favor me de uma nota boa
+        58a078fa420bd0994c6bcf03e0b00a9b
+
+    /////////// EXEMPLO 3: ///////////
+        ~$ python EP1.py 
+        Digite uma string: 
+        Y'all haters corny with that illuminati messPaparazzi, catch my fly, and my cocky fresh I'm so reckless when I rock my Givenchy dress (stylin') I'm so possessive so I rock his Roc necklaces My daddy Alabama, momma Louisiana You mix that negro with that Creole make a Texas bamma I like my baby hair, with baby hair and afros I like my negro nose with Jackson Five nostrils Earned all this money but they never take the country out me I got a hot sauce in my bag, swag
+        26148b07c11dcb86314d88649050b74d
+
+        ~$ ./a.out 
+        Digite alguma string: 
+        Y'all haters corny with that illuminati messPaparazzi, catch my fly, and my cocky fresh I'm so reckless when I rock my Givenchy dress (stylin') I'm so possessive so I rock his Roc necklaces My daddy Alabama, momma Louisiana You mix that negro with that Creole make a Texas bamma I like my baby hair, with baby hair and afros I like my negro nose with Jackson Five nostrils Earned all this money but they never take the country out me I got a hot sauce in my bag, swag
+        26148b07c11dcb86314d88649050b74d
+
+DEPENDÊNCIAS:
+    Sistema Operacional: Ubuntu 22.04.3 LTS  
+    ld: GNU ld (GNU Binutils for Ubuntu) 2.38
+    NASM: Versão 2.15.05 - Montador para linguagem Assembly;
+    Python: Ver~sao 3.10.10 - Linguagem Python;
+    CPU: 12th Gen Intel(R) Core(TM) i5-12500H
