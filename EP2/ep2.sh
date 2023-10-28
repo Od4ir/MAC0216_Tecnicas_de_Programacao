@@ -18,14 +18,32 @@
 # SO onde você executou e sabe que ele funciona são importantes de serem
 # colocadas aqui.
 
+# VARIÁVEIS:
+TEM_USUARIOS=1
+TEM_USUARIO=0
+CONTADOR=0
+
+function list_users {
+    while [ ${TEM_USUARIO} -eq 1 ]; do
+        sleep 2
+        #curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="Temos usuários!(Mensagem: ${CONTADOR}) " 1>/dev/null
+        echo "Olá, mensagem número: " ${CONTADOR}
+        let CONTADOR=CONTADOR+1
+    done
+}
+
+
 # FUNÇÃO DE LOGOUT:
 function logout {
     echo "Logout feito"
 }
 
+# FUNÇÃO DE CRIAÇÃO DE USUÁRIO:
 function create {
     echo "USUÁRIO: " $1 " criadx!"
     echo "SENHA: " $2 " definida"
+    TEM_USUARIO=1
+    echo "Agora tem usuários!" ${TEM_USUARIO}
 }
 
 # FUNÇÃO PARA ENCERRAR TUDO:
@@ -59,15 +77,17 @@ elif [ $1 = "cliente" ]; then
     while [ 1 ]; do
         # Leitura do comando escolhido pelo usuário:
         echo -n "cliente> " 
-        read op
-        echo ${op}
+        read -a op
 
         # Execução do comando escolhido pelo usuário:
-        if [ ${op} = "sair" ]; then
+        if [ ${op[0]} = "sair" ]; then
             echo "Saindo"
+            TEM_USUARIO=0
             quit $1
-        elif [ ${op} = "create" ]; then
-            create $2 $3
+        elif [ ${op[0]} = "create" ]; then
+            create ${op[1]} ${op[2]}
+            list_users
+
         else 
             echo "Não há essa opção."
         fi
@@ -76,21 +96,6 @@ elif [ $1 = "cliente" ]; then
 else 
     echo "Nenhum modo identificado, programa encerrado"
     exit 0
-fi
-
-CONTADOR=0
-
-
-while [ 1 ]; do
-    # A cada 1 minuto, a mensagem abaixo será enviada ao Telegram;
-    sleep 1 
-    echo "Digite um nome: "
-    read nome
-
-    # A mensagem enviada pelo bot:
-    curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="Olá, ${nome}, tudo bem? (Mensagem: ${CONTADOR}) " 1>/dev/null
-    let CONTADOR=CONTADOR+1
-
-done
+fi 
 
 exit 0

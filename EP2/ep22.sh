@@ -6,9 +6,5 @@ function list {
 
 FUNCAO1="list"
 
-read op
-if [ ${op} = "list" ]; then
-    list
-else 
-    echo "Not a list"
-fi
+read -a op
+echo ${op[1]}
