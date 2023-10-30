@@ -19,11 +19,13 @@
 # colocadas aqui.
 
 # VARIÁVEIS:
-TEM_USUARIOS=1
 TEM_USUARIO=0
 CONTADOR=0
+USER_CONT=0
+USUARIOS=()
+SENHAS=()
 
-function list_users {
+function telegram_msg {
     while [ ${TEM_USUARIO} -eq 1 ]; do
         sleep 2
         #curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="Temos usuários!(Mensagem: ${CONTADOR}) " 1>/dev/null
@@ -31,7 +33,6 @@ function list_users {
         let CONTADOR=CONTADOR+1
     done
 }
-
 
 # FUNÇÃO DE LOGOUT:
 function logout {
@@ -42,8 +43,9 @@ function logout {
 function create {
     echo "USUÁRIO: " $1 " criadx!"
     echo "SENHA: " $2 " definida"
-    TEM_USUARIO=1
-    echo "Agora tem usuários!" ${TEM_USUARIO}
+    let USER_CONT=USER_CONT+1
+    USUARIOS+=($1)
+    SENHAS+=($2)
 }
 
 # FUNÇÃO PARA ENCERRAR TUDO:
@@ -54,7 +56,34 @@ function quit {
     exit 0
 }
 
+# FUNÇÕES DO SERVIDOR:
+function list_users {
+    if [ ${TEM_USUARIO} -eq 1 ]; then
+        echo "Temos " ${USER_CONT} " usuárix(s)"
+        for user_name in ${USUARIOS[*]}; do
+            echo ${user_name}
+        done
+    fi
+}
+
+# FUNÇÃO DE RESET:
+function reset {
+    echo "Reset do servidor..."
+    USUARIOS=()
+    SENHAS=()
+}
+
+
+
 # INICIO DO PROGRAMA:
+start_time=$(date +%s)
+
+function show_time {
+    actual_time=$(date +%s)
+    time_passed=$((actual_time - start_time))
+    echo "Tempo: $time_passed segundos."
+}
+
 if [ $1 = "servidor" ]; then
     echo " >>> MODO SERVIDOR LIGADO <<< "
     # Execução principal do modo servidor:
@@ -62,12 +91,24 @@ if [ $1 = "servidor" ]; then
         # Leitura do comando escolhido pelo usuário:
         echo -n "servidor> " 
         read op
-        echo ${op}
 
         # Execução do comando escolhido pelo usuário:
-        if [ ${op} = "sair" ]; then
+        if [ ${op} = "quit" ]; then
             echo "Saindo"
             quit $1
+
+        elif [ ${op} = "list" ]; then
+            echo "Listando usuários"
+            list_users
+
+        elif [ ${op} = "time" ]; then
+            show_time
+
+        elif [ ${op} = "reset" ]; then
+            reset
+
+        else 
+            echo "Opção inválida, digite novamente: "
         fi
     done
 
@@ -84,9 +125,17 @@ elif [ $1 = "cliente" ]; then
             echo "Saindo"
             TEM_USUARIO=0
             quit $1
+
         elif [ ${op[0]} = "create" ]; then
             create ${op[1]} ${op[2]}
+            TEM_USUARIO=1
+
+        elif [ ${op} = "list" ]; then
+            echo "Listando usuários"
             list_users
+
+        elif [ ${op} = "time" ]; then
+            show_time
 
         else 
             echo "Não há essa opção."
