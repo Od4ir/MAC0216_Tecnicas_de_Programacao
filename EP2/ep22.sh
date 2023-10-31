@@ -13,7 +13,7 @@ OPCOES="op1 op2 op3"
 
 select opt in ${OPCOES}; do
     if [ "$opt" == "op1" ]; then
-        echo "Op1 escolhida"
+        echo "oi"
     elif [ "$opt" == "op2" ]; then
         echo "op2"
     elif [ "$opt" == "op3" ]; then
