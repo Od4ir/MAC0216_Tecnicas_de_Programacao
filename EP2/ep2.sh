@@ -20,81 +20,138 @@
 
 # VARIÁVEIS:
 
-TEM_USUARIO=1
 CONTADOR=0
-USER_CONT=0
 USUARIOS=()
-MSG_TELEGRAM=()
+LOGADOS=()
 SENHAS=()
+MSG_TELEGRAM=()
 
 arq_temp=$(mktemp)
+tempo_inicial=$(date +%s)
 
-# FUNÇÃO DE LOGOUT:
-function logout {
-    echo "Logout feito"
+
+function envia_msg_telegram {
+    curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="$1" 1>/dev/null
 }
 
-# FUNÇÃO DE CRIAÇÃO DE USUÁRIO:
-function create {
-    echo "USUÁRIO: " $1 " criadx!"
-    echo "SENHA: " $2 " definida"
-    USUARIOS+=($1)
-    SENHAS+=($2)
-    echo "$1;$2" >> "${arq_temp}"
-    let USER_CONT=USER_CONT+1
+# //// FUNÇÕES SERVIDOR ////
+
+# Função para mostrar o tempo;
+function mostrar_tempo {
+    tempo_atual=$(date +%s)
+    tempo_passado=$((tempo_atual - tempo_inicial))
+    echo "$time_passed segundos."
 }
 
-# FUNÇÕES DO SERVIDOR:
-function list_users {
-    if [ ${TEM_USUARIO} -eq 1 ]; then
-        echo "Temos " ${USER_CONT} " usuárix(s)"
-        for user_name in ${USUARIOS[*]}; do
-            echo ${user_name}
-        done
-    fi
-}
-
-function list_users2 {
+# Função para listar usuários que fizeram o login;
+function lista_usuarios_logados {
+    echo "Usuários Logados: "
     CONTADOR=0
     while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
-        echo ${CONTADOR} ": " ${USUARIOS[${CONTADOR}]}
-        echo ${CONTADOR} ": " ${SENHAS[${CONTADOR}]}
+        if [ ${LOGADOS[${CONTADOR}]} -eq 1 ]; then
+            echo ${USUARIOS[${CONTADOR}]}
+        fi
         let CONTADOR=CONTADOR+1
     done
 }
 
-# FUNÇÃO DE RESET:
-function reset {
-    echo "Reset do servidor..."
+# Função para remover todos os usuários que foram criados 
+# na instância atual;
+function reset_servidor {
     USUARIOS=()
     SENHAS=()
+    LOGADOS=()
 }
 
+# //// FUNÇÕES DE CLIENTE ////
+function cria_usuario {
+    for nome_usuario in ${USUARIOS[*]}; do
+        if [ ${nome_usuario} == $1 ]; then
+            echo "ERRO!"
+            return 1
+        fi
+    done
+    USUARIOS+=($1)
+    SENHAS+=($2)
+    LOGADOS+=(0)
+}
+
+# Função para mudar senha de um dado usuário;
+function muda_senha_usuario {
+    CONTADOR=0
+    while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
+        if [ ${USUARIOS[${CONTADOR}]} -eq $1 ] && [ ${SENHAS[$CONTADOR]} -eq $2]; then
+            SENHAS[${CONTADOR}]=$3
+            return 0
+        fi
+        let CONTADOR=CONTADOR+1
+    done
+    echo "ERRO!"
+}
+
+function login_usuario {
+    CONTADOR=0
+    while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
+        if [ ${USUARIOS[${CONTADOR}]} == $1 ]; then
+            if [ ${SENHAS[${CONTADOR}]} == $2]; then
+                if [ ${LOGADOS[${CONTADOR}]} -eq 0]; then
+                    LOGADOS[${CONTADOR}]=1
+                    MSG_TELEGRAM=()
+                    MSG_TELEGRAM="<LOGIN REALIZADO> Usuário ${USUARIOS[${CONTADOR}]} fez login"
+                    envia_msg_telegram ${MSG_TELEGRAM}
+                    echo "${USUARIOS[${CONTADOR}]}" << ${arq_temp}
+                    return 0
+                fi
+                else 
+                    echo "USUÁRIO JÁ LOGADO!"
+                fi
+            else 
+                echo "SENHA INCORRETA!"
+                MSG_TELEGRAM=()
+                MSG_TELEGRAM="<SENHA INCORRETA> Usuário ${USUARIOS[${CONTADOR}]} errou a senha"
+                envia_msg_telegram ${MSG_TELEGRAM}
+            fi
+        fi
+        let CONTADOR=CONTADOR+1
+    done
+    echo "ERRO!"
+}
+
+function logout_usuario {
+    MSG_TELEGRAM=()
+    MSG_TELEGRAM="<LOGOUT REALIZADO> Usuário $1 fez logout"
+    envia_msg_telegram ${MSG_TELEGRAM}
+    sed -i "/$1/d" "${arq_tempo}"
+    # Faz logout do usuário do pipe atual;
+}
+
+function mensagem_usuario {
+    # Pega o usuário do pipe atual; ??
+    # Pega o destinatário; $1
+    # Pega a mensagem; $2
+    # Envia a mensagem para o usuário destinatário;
+}
+
+
+
 # INICIO DO PROGRAMA:
-
-
 # LOOP DE MENSAGENS DO TELEGRAM:
 while [ 1 ]; do
-        sleep 4
-        if [ ${TEM_USUARIO} -eq 1 ]; then
-            MSG_TELEGRAM=()
-            MSG_TELEGRAM=$(cat "${arq_temp}")
-            curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="Lista de Usuários: ${MSG_TELEGRAM} (Mensagem: ${CONTADOR}) " 1>/dev/null
+
+    while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
+        if [ ${LOGADOS[${CONTADOR}]} -eq 1 ]; then
+            echo "${USUARIOS[${CONTADOR}]}" << ${arq_temp}
+        fi
+        let CONTADOR=CONTADOR+1
+    done
         else 
             curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text=" Não temos usuários!(Mensagem: ${CONTADOR}) " 1>/dev/null
         fi
         let CONTADOR=CONTADOR+1
+        sleep 5
 done &
 
 SEGUNDOPLANO=$!
-
-start_time=$(date +%s)
-
-function show_time {
-    actual_time=$(date +%s)
-    time_passed=$((actual_time - start_time))
-    echo "Tempo: $time_passed segundos."
-}
 
 if [ $1 = "servidor" ]; then
     echo " >>> MODO SERVIDOR LIGADO <<< "
@@ -105,22 +162,21 @@ if [ $1 = "servidor" ]; then
         read op
 
         # Execução do comando escolhido pelo usuário:
-        if [ ${op} = "quit" ]; then
-            echo "Saindo"
-            kill -15 ${SEGUNDOPLANO}
-            quit $1
-
-        elif [ ${op} = "list" ]; then
-            echo "Listando usuários"
-            list_users
+        if [ ${op} = "list" ]; then
+            lista_usuarios_logados
 
         elif [ ${op} = "time" ]; then
-            show_time
+            mostrar_tempo
 
         elif [ ${op} = "reset" ]; then
-            reset
+            reset_servidor
+            
+        elif [ ${op} = "quit" ]; then
+            echo "Saindo"
+            kill -15 ${SEGUNDOPLANO}
+            exit 0
 
-        else 
+        else
             echo "Opção inválida, digite novamente: "
         fi
     done
