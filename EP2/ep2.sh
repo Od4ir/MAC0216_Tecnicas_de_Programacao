@@ -113,7 +113,7 @@ function login_usuario {
             fi
         fi
         let CONTADOR=CONTADOR+1
-    done
+    donegt
     echo "ERRO!"
 }
 
