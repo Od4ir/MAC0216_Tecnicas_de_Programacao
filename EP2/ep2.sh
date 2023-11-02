@@ -71,7 +71,7 @@ function cria_usuario {
 function muda_senha_usuario {
     CONTADOR=0
     while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
-        if [ ${USUARIOS[${CONTADOR}]} -eq $1 ] && [ ${SENHAS[$CONTADOR]} -eq $2]; then
+        if [ ${USUARIOS[${CONTADOR}]} == $1 ] && [ ${SENHAS[$CONTADOR]} == $2 ]; then
             SENHAS[${CONTADOR}]=$3
             return 0
         fi
@@ -83,15 +83,15 @@ function muda_senha_usuario {
 function login_usuario {
     CONTADOR=0
     while [ ${CONTADOR} -lt ${#USUARIOS[@]} ]; do
-        let CONTADOR=CONTADOR+1
         if [ ${USUARIOS[${CONTADOR}]} == $1 ]; then
             if [ ${SENHAS[${CONTADOR}]} == $2 ]; then
                 if [ ${LOGADOS[$CONTADOR]} -eq 0 ]; then
                     LOGADOS[${CONTADOR}]=1
                     AUX=${USUARIOS[${CONTADOR}]}
                     MSG_TELEGRAM=()
-                    MSG_TELEGRAM="Usuárix " ${AUX} "fez login"
-                    echo ${MSG_TELEGRAM}
+                    MSG_TELEGRAM="Usuárix ${AUX} fez login"
+                    echo ${MSG_TELEGRAM} 
+                    echo ${AUX} >> "${arq_temp}"
                 else
                     echo "Usuário já logado"
                 fi
@@ -101,7 +101,6 @@ function login_usuario {
         fi
         let CONTADOR=CONTADOR+1
     done
-    echo "ERRO!"
 }
 
 function logout_usuario {
@@ -118,6 +117,16 @@ function mensagem_usuario {
     # Pega a mensagem; $2
     # Envia a mensagem para o usuário destinatário;
     echo "mensagem"
+}
+
+function lista_usuarios_existentes {
+    CONTADOR=0
+    echo "Temos " ${#USUARIOS[*]} " usuários existentes"
+    while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
+        echo " > Usuário: " ${USUARIOS[${CONTADOR}]}
+        echo " > Senha: " ${SENHAS[${CONTADOR}]}
+        let CONTADOR=CONTADOR+1
+    done
 }
 
 while [ 1 ]; do
@@ -189,6 +198,15 @@ elif [ $1 = "cliente" ]; then
 
         elif [ ${op} = "magic" ]; then
             cat ${arq_temp}
+
+        elif [ ${op} = "login" ]; then
+            login_usuario  ${op[1]} ${op[2]}
+
+        elif [ ${op} = "passwd" ]; then
+            muda_senha_usuario ${op[1]} ${op[2]} ${op[3]}
+
+        elif [ ${op} = "user" ]; then
+            lista_usuarios_existentes
 
         else 
             echo "Não há essa opção."
