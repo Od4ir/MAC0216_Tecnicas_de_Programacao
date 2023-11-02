@@ -173,15 +173,26 @@ if [ $1 = "servidor" ]; then
     done
 
 elif [ $1 = "cliente" ]; then
-    echo " >>> SEJA BEM VINDX <<< "
+    echo -e " >>> SEJA BEM VINDX <<< \n"
      # Execução principal do modo cliente:
+    echo " Lista de opções disponíveis: "
+    echo -e "\n [ Login NÃO necessário: ]"
+    echo "  >>> create usuario senha..........[ Criação de usuário ]"
+    echo "  >>> passwd usuario antiga nova...[ Mudança de senha ]"
+    echo "  >>> login usuario senha..........[ Login ]"
+    echo -e "  >>> quit.........................[ Sair do chat ]\n"
+
+    echo " [ Login necessário: ] "
+    echo "  >>> list.........................[ Lista usuários logados ]"
+    echo "  >>> logout.......................[ Faz logout do sistema ]"
+    echo -e "  >>> msg usuario mensagem.........[ Envia mensagem para outro usuário ]\n"
     while [ 1 ]; do
         # Leitura do comando escolhido pelo usuário:
         echo -n "cliente> " 
         read -a op
 
         # Execução do comando escolhido pelo usuário:
-        if [ ${op[0]} = "sair" ]; then
+        if [ ${op[0]} = "quit" ]; then
             echo "Saindo"
             kill -15 ${SEGUNDOPLANO}
             exit 0
