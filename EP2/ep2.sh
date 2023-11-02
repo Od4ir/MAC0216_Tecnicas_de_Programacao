@@ -24,7 +24,7 @@ CONTADOR=0
 USUARIOS=()
 LOGADOS=()
 SENHAS=()
-MSG_TELEGRAM=()
+MSG_TELEGRAM=""
 
 arq_temp=$(mktemp)
 tempo_inicial=$(date +%s)
@@ -88,8 +88,8 @@ function login_usuario {
                 if [ ${LOGADOS[$CONTADOR]} -eq 0 ]; then
                     LOGADOS[${CONTADOR}]=1
                     AUX=${USUARIOS[${CONTADOR}]}
-                    MSG_TELEGRAM=()
                     MSG_TELEGRAM="Usuárix ${AUX} fez login"
+                    envia_msg_telegram "${MSG_TELEGRAM}"
                     echo ${MSG_TELEGRAM} 
                     echo ${AUX} >> "${arq_temp}"
                 else
@@ -130,15 +130,14 @@ function lista_usuarios_existentes {
 }
 
 while [ 1 ]; do
-    while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
-        if [ ${LOGADOS[${CONTADOR}]} -eq 1 ]; then
-            echo "oii"
-        else 
-            curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text=" Não temos usuários!(Mensagem: ${CONTADOR}) " 1>/dev/null
-        fi
-        let CONTADOR=CONTADOR+1
-        sleep 5
-    done
+    if [ -s "${arq_temp}" ]; then
+        echo -e "Usuários logados: \n"
+        conteudo=$(cat "${arq_temp}")
+        echo ${conteudo}
+    else 
+        echo "Não temos usuários logados"
+    fi
+    sleep 10s
 done &
 
 SEGUNDOPLANO=$!
