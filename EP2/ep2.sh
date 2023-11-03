@@ -24,7 +24,7 @@ CONTADOR=0
 USUARIOS=()
 LOGADOS=()
 SENHAS=()
-MSG_TELEGRAM=()
+MSG_TELEGRAM=""
 
 arq_temp=$(mktemp)
 tempo_inicial=$(date +%s)
@@ -71,7 +71,7 @@ function cria_usuario {
 function muda_senha_usuario {
     CONTADOR=0
     while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
-        if [ ${USUARIOS[${CONTADOR}]} -eq $1 ] && [ ${SENHAS[$CONTADOR]} -eq $2]; then
+        if [ ${USUARIOS[${CONTADOR}]} == $1 ] && [ ${SENHAS[$CONTADOR]} == $2 ]; then
             SENHAS[${CONTADOR}]=$3
             return 0
         fi
@@ -83,15 +83,15 @@ function muda_senha_usuario {
 function login_usuario {
     CONTADOR=0
     while [ ${CONTADOR} -lt ${#USUARIOS[@]} ]; do
-        let CONTADOR=CONTADOR+1
         if [ ${USUARIOS[${CONTADOR}]} == $1 ]; then
             if [ ${SENHAS[${CONTADOR}]} == $2 ]; then
                 if [ ${LOGADOS[$CONTADOR]} -eq 0 ]; then
                     LOGADOS[${CONTADOR}]=1
                     AUX=${USUARIOS[${CONTADOR}]}
-                    MSG_TELEGRAM=()
-                    MSG_TELEGRAM="Usuárix " ${AUX} "fez login"
-                    echo ${MSG_TELEGRAM}
+                    MSG_TELEGRAM="Usuárix ${AUX} fez login"
+                    envia_msg_telegram "${MSG_TELEGRAM}"
+                    echo ${MSG_TELEGRAM} 
+                    echo ${AUX} >> "${arq_temp}"
                 else
                     echo "Usuário já logado"
                 fi
@@ -101,7 +101,6 @@ function login_usuario {
         fi
         let CONTADOR=CONTADOR+1
     done
-    echo "ERRO!"
 }
 
 function logout_usuario {
@@ -120,16 +119,25 @@ function mensagem_usuario {
     echo "mensagem"
 }
 
-while [ 1 ]; do
+function lista_usuarios_existentes {
+    CONTADOR=0
+    echo "Temos " ${#USUARIOS[*]} " usuários existentes"
     while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
-        if [ ${LOGADOS[${CONTADOR}]} -eq 1 ]; then
-            echo "oii"
-        else 
-            curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text=" Não temos usuários!(Mensagem: ${CONTADOR}) " 1>/dev/null
-        fi
+        echo " > Usuário: " ${USUARIOS[${CONTADOR}]}
+        echo " > Senha: " ${SENHAS[${CONTADOR}]}
         let CONTADOR=CONTADOR+1
-        sleep 5
     done
+}
+
+while [ 1 ]; do
+    if [ -s "${arq_temp}" ]; then
+        echo -e "Usuários logados: \n"
+        conteudo=$(cat "${arq_temp}")
+        echo ${conteudo}
+    else 
+        echo "Não temos usuários logados"
+    fi
+    sleep 10s
 done &
 
 SEGUNDOPLANO=$!
@@ -164,15 +172,26 @@ if [ $1 = "servidor" ]; then
     done
 
 elif [ $1 = "cliente" ]; then
-    echo " >>> SEJA BEM VINDX <<< "
+    echo -e " >>> SEJA BEM VINDX <<< \n"
      # Execução principal do modo cliente:
+    echo " Lista de opções disponíveis: "
+    echo -e "\n [ Login NÃO necessário: ]"
+    echo "  >>> create usuario senha..........[ Criação de usuário ]"
+    echo "  >>> passwd usuario antiga nova...[ Mudança de senha ]"
+    echo "  >>> login usuario senha..........[ Login ]"
+    echo -e "  >>> quit.........................[ Sair do chat ]\n"
+
+    echo " [ Login necessário: ] "
+    echo "  >>> list.........................[ Lista usuários logados ]"
+    echo "  >>> logout.......................[ Faz logout do sistema ]"
+    echo -e "  >>> msg usuario mensagem.........[ Envia mensagem para outro usuário ]\n"
     while [ 1 ]; do
         # Leitura do comando escolhido pelo usuário:
         echo -n "cliente> " 
         read -a op
 
         # Execução do comando escolhido pelo usuário:
-        if [ ${op[0]} = "sair" ]; then
+        if [ ${op[0]} = "quit" ]; then
             echo "Saindo"
             kill -15 ${SEGUNDOPLANO}
             exit 0
@@ -189,6 +208,18 @@ elif [ $1 = "cliente" ]; then
 
         elif [ ${op} = "magic" ]; then
             cat ${arq_temp}
+
+        elif [ ${op} = "login" ]; then
+            login_usuario  ${op[1]} ${op[2]}
+
+        elif [ ${op} = "passwd" ]; then
+            muda_senha_usuario ${op[1]} ${op[2]} ${op[3]}
+
+        elif [ ${op} = "logout" ]; then
+            muda_senha_usuario ${op[1]} ${op[2]} ${op[3]}
+
+        elif [ ${op} = "user" ]; then
+            lista_usuarios_existentes
 
         else 
             echo "Não há essa opção."
