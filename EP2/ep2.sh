@@ -25,9 +25,14 @@ USUARIOS=()
 LOGADOS=()
 SENHAS=()
 MSG_TELEGRAM=""
+USER=""
+ARQ="/tmp/logados.txt"
+USERS_INFO="/tmp/usuarios.txt"
 
-arq_temp=$(mktemp)
+touch "${ARQ}"
 tempo_inicial=$(date +%s)
+
+trap "rm -f ${ARQ}" EXIT
 
 function envia_msg_telegram {
     curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="$1" 1>/dev/null
@@ -40,14 +45,12 @@ function mostrar_tempo {
 }
 
 function lista_usuarios_logados {
-    echo "Usuários Logados: "
     CONTADOR=0
-    while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
-        if [ ${LOGADOS[${CONTADOR}]} -eq 1 ]; then
-            echo ${USUARIOS[${CONTADOR}]}
-        fi
-        let CONTADOR=CONTADOR+1
-    done
+    if [ -s "${ARQ}" ]; then
+        echo -e "Usuários logados: \n"
+        conteudo=$(cat "${ARQ}")
+        echo ${conteudo}
+    fi
 }
 
 function reset_servidor {
@@ -86,12 +89,19 @@ function login_usuario {
         if [ ${USUARIOS[${CONTADOR}]} == $1 ]; then
             if [ ${SENHAS[${CONTADOR}]} == $2 ]; then
                 if [ ${LOGADOS[$CONTADOR]} -eq 0 ]; then
+
                     LOGADOS[${CONTADOR}]=1
+
                     AUX=${USUARIOS[${CONTADOR}]}
                     MSG_TELEGRAM="Usuárix ${AUX} fez login"
                     envia_msg_telegram "${MSG_TELEGRAM}"
-                    echo ${MSG_TELEGRAM} 
-                    echo ${AUX} >> "${arq_temp}"
+                    echo ${AUX} >> "${ARQ}"
+
+                    USER="/tmp/${AUX}"
+                    if [[ ! -p ${USER} ]]; then
+                        mkfifo ${USER}
+                    fi
+                    trap "rm -f ${USER}" EXIT
                 else
                     echo "Usuário já logado"
                 fi
@@ -106,8 +116,8 @@ function login_usuario {
 function logout_usuario {
     MSG_TELEGRAM=()
     MSG_TELEGRAM="<LOGOUT REALIZADO> Usuário $1 fez logout"
-    envia_msg_telegram ${MSG_TELEGRAM}
-    sed -i "/$1/d" "${arq_tempo}"
+    envia_msg_telegram ${MSG_TELEGRAM[*]}
+    sed -i "/$1/d" "${ARQ}"
     # Faz logout do usuário do pipe atual;
 }
 
@@ -119,25 +129,23 @@ function mensagem_usuario {
     echo "mensagem"
 }
 
-function lista_usuarios_existentes {
-    CONTADOR=0
-    echo "Temos " ${#USUARIOS[*]} " usuários existentes"
-    while [ ${CONTADOR} -lt ${#USUARIOS[*]} ]; do
-        echo " > Usuário: " ${USUARIOS[${CONTADOR}]}
-        echo " > Senha: " ${SENHAS[${CONTADOR}]}
-        let CONTADOR=CONTADOR+1
-    done
-}
+while [ 1 ]; do
+    if [ -s "${ARQ}" ]; then
+        echo -e "Usuários logados: \n"
+        conteudo=$(cat "${ARQ}")
+        envia_msg_telegram ${conteudo}
+    fi
+    sleep 16s
+done &
+
+PRIMEIROPLANO=$!
 
 while [ 1 ]; do
-    if [ -s "${arq_temp}" ]; then
-        echo -e "Usuários logados: \n"
-        conteudo=$(cat "${arq_temp}")
-        echo ${conteudo}
-    else 
-        echo "Não temos usuários logados"
+    if [ "${USER}" != "" ]; then
+        conteudo=$(cat <${USER})
+        echo ${CONTADOR} ${conteudo}
+        let CONTADOR=CONTADOR+1
     fi
-    sleep 10s
 done &
 
 SEGUNDOPLANO=$!
@@ -163,6 +171,7 @@ if [ $1 = "servidor" ]; then
             
         elif [ ${op} = "quit" ]; then
             echo "Saindo"
+            kill -15 ${PRIMEIROPLANO}
             kill -15 ${SEGUNDOPLANO}
             exit 0
 
@@ -193,6 +202,7 @@ elif [ $1 = "cliente" ]; then
         # Execução do comando escolhido pelo usuário:
         if [ ${op[0]} = "quit" ]; then
             echo "Saindo"
+            kill -15 ${PRIMEIROPLANO}
             kill -15 ${SEGUNDOPLANO}
             exit 0
 
@@ -207,19 +217,23 @@ elif [ $1 = "cliente" ]; then
             mostrar_tempo
 
         elif [ ${op} = "magic" ]; then
-            cat ${arq_temp}
+            cat ${ARQ}
 
         elif [ ${op} = "login" ]; then
-            login_usuario  ${op[1]} ${op[2]}
+            if [ "${USER}" == "" ]; then
+                login_usuario  ${op[1]} ${op[2]}
+            else 
+                echo "Você já está logado!"
+            fi
 
         elif [ ${op} = "passwd" ]; then
             muda_senha_usuario ${op[1]} ${op[2]} ${op[3]}
 
         elif [ ${op} = "logout" ]; then
-            muda_senha_usuario ${op[1]} ${op[2]} ${op[3]}
+            logout_usuario ${op[1]}
 
-        elif [ ${op} = "user" ]; then
-            lista_usuarios_existentes
+        elif [ ${op} = "msg" ]; then
+            mensagem_usuario ${op[1]}
 
         else 
             echo "Não há essa opção."
@@ -229,5 +243,11 @@ else
     echo "Opção não encontrada."
 fi
 
+kill -15 ${PRIMEIROPLANO}
 kill -15 ${SEGUNDOPLANO}
 exit 0
+
+
+# Garantir que o modo cliente não seja ativado sem o servidor;
+# Apagar os usuários quando fizerem logout;
+

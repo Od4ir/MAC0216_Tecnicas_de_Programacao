@@ -22,6 +22,13 @@ done &
 SEGUNDOPLANO=$!
 
 while [ 1 ]; do
+    echo "Terceiro Plano"
+    sleep 15
+done &
+
+TERCEIROPLANO=$!
+
+while [ 1 ]; do
     echo "Digite 'usuário mensagem' -> "
     read -a mensagem 
     user="/tmp/${mensagem[0]}"
@@ -30,6 +37,7 @@ while [ 1 ]; do
     if [ "${mensagem[0]}" == 'quit' ]; then
         echo "Saindo"
         kill -15 ${SEGUNDOPLANO}
+        kill -15 ${TERCEIROPLANO}
         exit 0
     else
         echo "${mensagem[*]}" >${user}  
