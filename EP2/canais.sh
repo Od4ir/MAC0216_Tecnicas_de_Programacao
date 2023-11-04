@@ -21,6 +21,5 @@ while [ 1 ]; do
     done < "${op}"
 done
 
-rm -f "${nome_canal}"
 
 exit 0
