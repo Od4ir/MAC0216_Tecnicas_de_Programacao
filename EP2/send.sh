@@ -15,8 +15,6 @@ while [ 1 ]; do
         else 
             echo "${msg[*]}" >$pipe
         fi
-    else
-        echo "Hello from $$" >$pipe
     fi
 done
 
