@@ -77,26 +77,31 @@ function muda_senha_usuario {
 
 function login_usuario {
     info=$(grep "$1;" "${USERS_INFO}")
-    if [ -n "${info}" ]; then        
-        result=$(echo "${info}" | sed "s/$1;//g")
-        if [ "${result}" == $2 ]; then
-            echo "$1" >> ${LOGADOS}
+    if [ -n "${info}" ]; then    
+        aux=$(grep "$1" "${LOGADOS}") 
+        if [ -n "${aux}" ]; then
+            echo "Usuárix já logado!"   
+        else
+            result=$(echo "${info}" | sed "s/$1;//g")
+            if [ "${result}" == $2 ]; then
+                echo "$1" >> ${LOGADOS}
 
-            echo "/tmp/$1" > ${USER}
-            AUX=$(cat ${USER})
-            echo ${AUX}
-            if [[ ! -p ${AUX} ]]; then
-                mkfifo ${AUX}
+                echo "/tmp/$1" > ${USER}
+                AUX=$(cat ${USER})
+                echo ${AUX}
+                if [[ ! -p ${AUX} ]]; then
+                    mkfifo ${AUX}
+                fi
+                trap "rm -f ${AUX}" EXIT
+
+                MSG_TELEGRAM="Usuárix $1 fez login"
+                envia_msg_telegram "${MSG_TELEGRAM}"
+
+            else 
+                echo "Senha incorreta"
+                MSG_TELEGRAM="Usuárix $1 errou a senha"
+                envia_msg_telegram "${MSG_TELEGRAM}"
             fi
-            trap "rm -f ${AUX}" EXIT
-
-            MSG_TELEGRAM="Usuárix $1 fez login"
-            envia_msg_telegram "${MSG_TELEGRAM}"
-
-        else 
-            echo "Senha incorreta"
-            MSG_TELEGRAM="Usuárix $1 errou a senha"
-            envia_msg_telegram "${MSG_TELEGRAM}"
         fi
     else 
         echo "Usuário não encontrado"
@@ -104,25 +109,38 @@ function login_usuario {
 }
 
 function logout_usuario {
-    MSG_TELEGRAM=()
-    MSG_TELEGRAM="<LOGOUT REALIZADO> Usuário $1 fez logout"
-    envia_msg_telegram "${MSG_TELEGRAM}"
-    sed -i "/$1/d" "${LOGADOS}"
-    rm -f ${USER}
+    USER_ATUAL=$(cat "${USER}" | sed "s/\/tmp\///g")
+    echo ${USER_ATUAL}
+    if [ "${USER_ATUAL}" != "$1" ]; then
+        echo "Você não é esse usuário, não pode fazer o logout"
+    else 
+        MSG_TELEGRAM=()
+        MSG_TELEGRAM="<LOGOUT REALIZADO> Usuário $1 fez logout"
+        envia_msg_telegram "${MSG_TELEGRAM}"
+        sed -i "/$1/d" "${LOGADOS}"
+        rm -f "/tmp/${USER_ATUAL}"
+    fi
     # Faz logout do usuário do pipe atual;
 }
 
 function mensagem_usuario {
-    aux=$1
-    user=$2
-    sender=$3
-    shift 3
-    mensagem="$@"
-    result=$(echo "${mensagem}" | sed "s/${aux} ${user}//g")
-    dest="/tmp/${user}"
-    msg="[Mensagem do ${sender}]: ${result}"
-    echo "${msg}" >${dest}
-    echo "cliente> " >${dest}
+    info=$(grep "$2" "${LOGADOS}")
+    if [ -n "${info}" ]; then
+        aux=$1
+        user=$2
+        sender=$3
+        shift 3
+        mensagem="$@"
+        result=$(echo "${mensagem}" | sed "s/${aux} ${user}//g")
+        dest="/tmp/${user}"
+        msg="[Mensagem do ${sender}]: ${result}"
+        # printf "%s\n" "${msg}" > "${dest}"
+        echo "${msg}" >${dest}
+        echo "cliente> " >${dest}
+    else 
+        echo "Usuárix não encontrado"
+    fi  
+    # printf "cliente> " > "${dest}"
 }
 
 function limpa_arquivos {
@@ -204,9 +222,9 @@ elif [ $1 = "cliente" ]; then
     while [ 1 ]; do
         if [ -s "${USER}" ]; then
             AUX=$(cat ${USER})
-            if [ ! -s "$AUX" ]  && [ -e "$AUX" ]; then
+            if [ ! -s "$AUX" ] && [ -e "$AUX" ]; then
                 conteudo=$(cat <${AUX})
-                echo "${conteudo}"
+                echo -n "${conteudo}"
             fi
         fi
     done &
@@ -248,7 +266,6 @@ elif [ $1 = "cliente" ]; then
             logout_usuario ${op[1]}
 
         elif [ ${op} = "msg" ]; then
-            # AUX=$(cat ${USER})
             remetente=$(cat "${USER}" | sed "s/\/tmp\///g")
             mensagem_usuario ${op[0]} ${op[1]} ${remetente} ${op[@]}
 
@@ -263,14 +280,9 @@ else
     echo "Opção não encontrada."
 fi
 
-kill -15 ${PRIMEIROPLANO} 
-kill -15 ${SEGUNDOPLANO}
-limpa_arquivos
-exit 0
 
 
 # Garantir que o modo cliente não seja ativado sem o servidor;
-# Apagar os usuários quando fizerem logout;
-# Corrigir o time para os clientes;
 # O reset tem que zerar o tempo também?
+# Verificar se o usuário está logado antes de enviar a mensagem
 
