@@ -93,14 +93,15 @@ function login_usuario {
                     mkfifo ${AUX}
                 fi
                 trap "rm -f ${AUX}" EXIT
-
+                DATA=$(date)
                 MSG_TELEGRAM="Usuárix $1 fez login"
-                envia_msg_telegram "${MSG_TELEGRAM}"
+                envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
 
             else 
                 echo "Senha incorreta"
+                DATA=$(date)
                 MSG_TELEGRAM="Usuárix $1 errou a senha"
-                envia_msg_telegram "${MSG_TELEGRAM}"
+                envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
             fi
         fi
     else 
@@ -116,7 +117,8 @@ function logout_usuario {
     else 
         MSG_TELEGRAM=()
         MSG_TELEGRAM="<LOGOUT REALIZADO> Usuário $1 fez logout"
-        envia_msg_telegram "${MSG_TELEGRAM}"
+        DATA=$(date)
+        envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
         sed -i "/$1/d" "${LOGADOS}"
         rm -f "/tmp/${USER_ATUAL}"
     fi
@@ -204,6 +206,7 @@ elif [ $1 = "cliente" ]; then
     fi
 
     USER=$(mktemp)
+    echo ${USER}
 
     echo -e " >>> SEJA BEM VINDX <<< \n"
      # Execução principal do modo cliente:
@@ -222,7 +225,7 @@ elif [ $1 = "cliente" ]; then
     while [ 1 ]; do
         if [ -s "${USER}" ]; then
             AUX=$(cat ${USER})
-            if [ ! -s "$AUX" ] && [ -e "$AUX" ]; then
+            if [ -e "${AUX}" ] && [ -s "${AUX}" ]; then
                 conteudo=$(cat <${AUX})
                 echo -n "${conteudo}"
             fi
@@ -264,6 +267,8 @@ elif [ $1 = "cliente" ]; then
 
         elif [ ${op} = "logout" ]; then
             logout_usuario ${op[1]}
+            truncate -s 0 "${USER}"
+            echo ${USER}
 
         elif [ ${op} = "msg" ]; then
             remetente=$(cat "${USER}" | sed "s/\/tmp\///g")
