@@ -235,15 +235,11 @@ elif [ $1 = "cliente" ]; then
     echo "  >>> logout.......................[ Faz logout do sistema ]"
     echo -e "  >>> msg usuario mensagem.........[ Envia mensagem para outro usuário ]\n"
 
-    while [ 1 ]; do
-        if [ -s "${USER}" ]; then
-            # echo "Entrou"
+    while true; do
+        if [ -e "${USER}" ]; then
             AUX=$(cat ${USER})
-            if [ -s "${AUX}" ]; then
-                conteudo=$(cat <${AUX})
-                echo -n "${conteudo}"
-                > "${AUX}"
-            fi
+            conteudo=$(cat <${AUX})
+            echo -n "${conteudo}"
         fi
     done &
 
