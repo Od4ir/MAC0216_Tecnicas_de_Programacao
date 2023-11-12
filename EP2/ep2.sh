@@ -54,11 +54,11 @@ function cria_usuario {
         echo "Username indisponível" 
     else
         echo "$1;$2" >> ${USERS_INFO}
-        # Isso é feito para permitir que se crie um usuário
-        # que seja igual a senha de outro usuário;
+        # O formato desse arquivo fica como uma lista de "username;senha"
     fi
 }
 
+# Altera a senha do usuário no arquivo usuarios_info.txt
 function muda_senha_usuario {
     info=$(grep "$1;" "${USERS_INFO}")
     if [ -n "${info}" ]; then
@@ -75,24 +75,35 @@ function muda_senha_usuario {
     fi
 }
 
+# Tenta fazer o login do usuário;
 function login_usuario {
+    # Procura o usuário na lista de informações do usuário:
     info=$(grep "$1;" "${USERS_INFO}")
     if [ -n "${info}" ]; then    
+        # Se achar, verifica se o usuário está na lista de logados;
         aux=$(grep "$1" "${LOGADOS}") 
         if [ -n "${aux}" ]; then
             echo "Usuárix já logado!"   
         else
+            # Se o usuário não estiver logado, verifica se a senha está correta;
             result=$(echo "${info}" | sed "s/$1;//g")
             if [ "${result}" == $2 ]; then
+                # Marca que o usuário está logado;
                 echo "$1" >> ${LOGADOS}
 
+                # Salva em ${USER} o caminho para o pipe do usuário logado;
                 echo "/tmp/$1" > ${USER}
                 AUX=$(cat ${USER})
-                echo ${AUX}
+
+                # Cria o pipe do usuário para ele receber as mensagens:
                 if [[ ! -p ${AUX} ]]; then
                     mkfifo ${AUX}
                 fi
+
+                # Apaga o arquivo quando o programa se encerrar:
                 trap "rm -f ${AUX}" EXIT
+
+                # Envia a mensagem para o telegram sobre o login do usuário:
                 DATA=$(date)
                 MSG_TELEGRAM="Usuárix $1 fez login"
                 envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
@@ -110,8 +121,10 @@ function login_usuario {
 }
 
 function logout_usuario {
+    # Verifica se o usuário que está tentando fazer logout é o 
+    # user logado atualmente;
     USER_ATUAL=$(cat "${USER}" | sed "s/\/tmp\///g")
-    echo ${USER_ATUAL}
+
     if [ "${USER_ATUAL}" != "$1" ]; then
         echo "Você não é esse usuário, não pode fazer o logout"
     else 
@@ -205,11 +218,11 @@ elif [ $1 = "cliente" ]; then
         exit 0
     fi
 
+    # Esse arquivo guarda as informações do pipe do usuário atual;
     USER=$(mktemp)
-    echo ${USER}
+    trap "rm -f ${USER}" EXIT
 
     echo -e " >>> SEJA BEM VINDX <<< \n"
-     # Execução principal do modo cliente:
     echo " Lista de opções disponíveis: "
     echo -e "\n [ Login NÃO necessário: ]"
     echo "  >>> create usuario senha.........[ Criação de usuário ]"
@@ -224,10 +237,12 @@ elif [ $1 = "cliente" ]; then
 
     while [ 1 ]; do
         if [ -s "${USER}" ]; then
+            # echo "Entrou"
             AUX=$(cat ${USER})
-            if [ -e "${AUX}" ] && [ -s "${AUX}" ]; then
+            if [ -s "${AUX}" ]; then
                 conteudo=$(cat <${AUX})
                 echo -n "${conteudo}"
+                > "${AUX}"
             fi
         fi
     done &
@@ -267,15 +282,14 @@ elif [ $1 = "cliente" ]; then
 
         elif [ ${op} = "logout" ]; then
             logout_usuario ${op[1]}
-            truncate -s 0 "${USER}"
-            echo ${USER}
+            > "${USER}"
 
         elif [ ${op} = "msg" ]; then
             remetente=$(cat "${USER}" | sed "s/\/tmp\///g")
             mensagem_usuario ${op[0]} ${op[1]} ${remetente} ${op[@]}
 
         elif [ ${op} = "panda" ]; then
-            cat ${USERS_INFO}
+            cat ${USER}
 
         else 
             echo "Não há essa opção."
