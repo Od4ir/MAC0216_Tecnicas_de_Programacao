@@ -240,7 +240,9 @@ elif [ $1 = "cliente" ]; then
 
     while true; do
         if [ -s "${USER}" ]; then
+            echo -n " <!< "
             AUX=$(cat ${USER})
+            echo " >!>"
             if [ -e "${AUX}" ]; then
                 echo " <<<< "
                 conteudo=$(cat <${AUX})
@@ -249,6 +251,7 @@ elif [ $1 = "cliente" ]; then
                 echo " >>>> "
             fi
         fi
+        sleep 1
     done &
 
     LOOP_RECEBE_MSG=$!
