@@ -121,24 +121,23 @@ function login_usuario {
 }
 
 function logout_usuario {
-    # Verifica se o usuário que está tentando fazer logout é o 
-    # user logado atualmente;
-    USER_ATUAL=$(cat "${USER}" | sed "s/\/tmp\///g")
+    AUX=$(cat ${USER})
+    echo ${AUX}
 
-    if [ "${USER_ATUAL}" != "$1" ]; then
-        echo "Você não é esse usuário, não pode fazer o logout"
-    else 
-        MSG_TELEGRAM=()
-        MSG_TELEGRAM="<LOGOUT REALIZADO> Usuário $1 fez logout"
-        DATA=$(date)
-        envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
-        sed -i "/$1/d" "${LOGADOS}"
-        rm -f "/tmp/${USER_ATUAL}"
-        > ${USER}
-        if [ ! -s "${USER}" ]; then
-            echo "Tá vazio"
-        fi
+    USER_ATUAL=$(echo "${AUX}" | sed "s|/tmp/||")
+    echo "Logout de ${USER_ATUAL}"
+
+    MSG_TELEGRAM=()
+    MSG_TELEGRAM="<LOGOUT REALIZADO> Usuário fez logout"
+    DATA=$(date)
+    envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
+    sed -i "/${USER_ATUAL}/d" "${LOGADOS}"
+    > ${USER}
+    if [ ! -s "${USER}" ]; then
+        echo "Tá vazio"
     fi
+    echo "" >"${AUX}"
+    rm -f ${AUX}
     # Faz logout do usuário do pipe atual;
 }
 
@@ -283,7 +282,8 @@ elif [ $1 = "cliente" ]; then
             muda_senha_usuario ${op[1]} ${op[2]} ${op[3]}
 
         elif [ ${op} = "logout" ]; then
-            logout_usuario ${op[1]}
+            logout_usuario 
+            
 
         elif [ ${op} = "msg" ]; then
             remetente=$(cat "${USER}" | sed "s/\/tmp\///g")
