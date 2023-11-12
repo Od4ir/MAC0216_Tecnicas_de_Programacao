@@ -134,6 +134,10 @@ function logout_usuario {
         envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
         sed -i "/$1/d" "${LOGADOS}"
         rm -f "/tmp/${USER_ATUAL}"
+        > ${USER}
+        if [ ! -s "${USER}" ]; then
+            echo "Tá vazio"
+        fi
     fi
     # Faz logout do usuário do pipe atual;
 }
@@ -151,7 +155,7 @@ function mensagem_usuario {
         msg="[Mensagem do ${sender}]: ${result}"
         # printf "%s\n" "${msg}" > "${dest}"
         echo "${msg}" >${dest}
-        echo "cliente> " >${dest}
+        # echo "cliente> " >${dest}
     else 
         echo "Usuárix não encontrado"
     fi  
@@ -236,10 +240,15 @@ elif [ $1 = "cliente" ]; then
     echo -e "  >>> msg usuario mensagem.........[ Envia mensagem para outro usuário ]\n"
 
     while true; do
-        if [ -e "${USER}" ]; then
+        if [ -s "${USER}" ]; then
             AUX=$(cat ${USER})
-            conteudo=$(cat <${AUX})
-            echo -n "${conteudo}"
+            if [ -e "${AUX}" ]; then
+                echo " <<<< "
+                conteudo=$(cat <${AUX})
+                echo "${conteudo}"
+                echo -n "cliente> " 
+                echo " >>>> "
+            fi
         fi
     done &
 
@@ -263,9 +272,6 @@ elif [ $1 = "cliente" ]; then
         elif [ ${op} = "list" ]; then
             lista_usuarios_logados
 
-        elif [ ${op} = "magic" ]; then
-            cat ${ARQ}
-
         elif [ ${op} = "login" ]; then
             if [ ! -s "${USER}" ]; then
                 login_usuario  ${op[1]} ${op[2]}
@@ -278,7 +284,6 @@ elif [ $1 = "cliente" ]; then
 
         elif [ ${op} = "logout" ]; then
             logout_usuario ${op[1]}
-            > "${USER}"
 
         elif [ ${op} = "msg" ]; then
             remetente=$(cat "${USER}" | sed "s/\/tmp\///g")
@@ -286,6 +291,11 @@ elif [ $1 = "cliente" ]; then
 
         elif [ ${op} = "panda" ]; then
             cat ${USER}
+            if [ -s "${USER}" ]; then
+                echo "Não está vazio"
+            elif [ ! -s "${USER}" ]; then
+                echo "Está vazio?"
+            fi
 
         else 
             echo "Não há essa opção."
