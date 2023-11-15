@@ -18,13 +18,14 @@
 # SO onde você executou e sabe que ele funciona são importantes de serem
 # colocadas aqui.
 
-CONTADOR=0
 LOGADOS="/tmp/logados.txt"
 USERS_INFO="/tmp/usuarios.txt"
+TOKEN="6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag"
+CHATID="1360171414"
 
 # Recebe uma mensagem e envia para o Telegram;
 function envia_msg_telegram {
-    curl -s https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage -d chat_id=1360171414 -d text="$1" 1>/dev/null
+    curl -s https://api.telegram.org/bot${TOKEN}/sendMessage -d chat_id=${CHATID} -d text="$1" 1>/dev/null
 }
 
 # Exibe o tempo em que o servidor está ligado;
@@ -36,8 +37,12 @@ function mostrar_tempo {
 
 # Lista os usuários do arquivo 'logados.txt'
 function lista_usuarios_logados {
-    echo ${LOGADOS}
-    cat ${LOGADOS}
+    if [ -s "${LOGADOS}" ]; then
+        echo "Usuárixs logadxs: "
+        cat ${LOGADOS}
+    else
+        echo "Não há usuárixs logadxs!"
+    fi
 }
 
 # Apaga os arquivos de informações do servidor;
@@ -70,7 +75,7 @@ function muda_senha_usuario {
             echo "ERRO!"
         fi
     else 
-        echo "Usuário não encontrado"
+        echo "Usuárix não encontradx"
         echo "ERRO!"
     fi
 }
@@ -83,7 +88,7 @@ function login_usuario {
         # Se achar, verifica se o usuário está na lista de logados;
         aux=$(grep "$1" "${LOGADOS}") 
         if [ -n "${aux}" ]; then
-            echo "Usuárix já logado!"   
+            echo "Usuárix já logadx!"   
         else
             # Se o usuário não estiver logado, verifica se a senha está correta;
             result=$(echo "${info}" | sed "s/$1;//g")
@@ -116,27 +121,22 @@ function login_usuario {
             fi
         fi
     else 
-        echo "Usuário não encontrado"
+        echo "Usuárix não encontradx"
     fi
 }
 
 function logout_usuario {
     AUX=$(cat ${USER})
-    echo ${AUX}
 
     USER_ATUAL=$(echo "${AUX}" | sed "s|/tmp/||")
-    echo "Logout de ${USER_ATUAL}"
+    echo "Logout de ${USER_ATUAL} feito!"
 
     MSG_TELEGRAM=()
-    MSG_TELEGRAM="<LOGOUT REALIZADO> Usuário fez logout"
+    MSG_TELEGRAM="<LOGOUT REALIZADO> Usuárix fez logout"
     DATA=$(date)
     envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
     sed -i "/${USER_ATUAL}/d" "${LOGADOS}"
     > ${USER}
-    if [ ! -s "${USER}" ]; then
-        echo "Tá vazio"
-    fi
-    echo "" >"${AUX}"
     rm -f ${AUX}
     # Faz logout do usuário do pipe atual;
 }
@@ -151,12 +151,12 @@ function mensagem_usuario {
         mensagem="$@"
         result=$(echo "${mensagem}" | sed "s/${aux} ${user}//g")
         dest="/tmp/${user}"
-        msg="[Mensagem do ${sender}]: ${result}"
+        msg="[Mensagem de ${sender}]: ${result}"
         # printf "%s\n" "${msg}" > "${dest}"
         echo "${msg}" >${dest}
         # echo "cliente> " >${dest}
     else 
-        echo "Usuárix não encontrado"
+        echo "Usuárix não encontradx"
     fi  
     # printf "cliente> " > "${dest}"
 }
@@ -179,7 +179,7 @@ if [ $1 = "servidor" ]; then
         if [ -s "${LOGADOS}" ]; then
             let CONTADOR=CONTADOR+1
             conteudo=$(cat ${LOGADOS})
-            envia_msg_telegram "${CONTADOR}: ${conteudo}"
+            envia_msg_telegram "${conteudo}"
         fi
         sleep 16s
     done &
@@ -204,7 +204,7 @@ if [ $1 = "servidor" ]; then
             reset_servidor
             
         elif [ ${op} = "quit" ]; then
-            echo "Saindo"
+            echo "Encerrando servidor..."
             kill -15 ${LOOP_MSG_TELEGRAM}
             limpa_arquivos
             exit 0
@@ -216,7 +216,7 @@ if [ $1 = "servidor" ]; then
 
 elif [ $1 = "cliente" ]; then
 
-    if [ ! -e "/tmp/usuarios.txt" ]; then
+    if [ ! -e "/tmp/usuarios.txt" ] && [ ! -e "/tmp/logados.txt" ]; then
         echo "Servidor não iniciado!"
         exit 0
     fi
@@ -240,15 +240,11 @@ elif [ $1 = "cliente" ]; then
 
     while true; do
         if [ -s "${USER}" ]; then
-            echo -n " <!< "
             AUX=$(cat ${USER})
-            echo " >!>"
             if [ -e "${AUX}" ]; then
-                echo " <<<< "
                 conteudo=$(cat <${AUX})
                 echo "${conteudo}"
                 echo -n "cliente> " 
-                echo " >>>> "
             fi
         fi
         sleep 1
@@ -271,37 +267,32 @@ elif [ $1 = "cliente" ]; then
         elif [ ${op[0]} = "create" ]; then
             cria_usuario ${op[1]} ${op[2]}
 
-        elif [ ${op} = "list" ]; then
-            lista_usuarios_logados
-
         elif [ ${op} = "login" ]; then
             if [ ! -s "${USER}" ]; then
                 login_usuario  ${op[1]} ${op[2]}
             else 
-                echo "Você já está logado!"
+                echo "Você já está logadx!"
             fi
 
         elif [ ${op} = "passwd" ]; then
             muda_senha_usuario ${op[1]} ${op[2]} ${op[3]}
 
-        elif [ ${op} = "logout" ]; then
-            logout_usuario 
-            
+        elif [ -s "${USER}" ]; then
+            if [ ${op} = "list" ]; then
+                lista_usuarios_logados
 
-        elif [ ${op} = "msg" ]; then
-            remetente=$(cat "${USER}" | sed "s/\/tmp\///g")
-            mensagem_usuario ${op[0]} ${op[1]} ${remetente} ${op[@]}
+            elif [ ${op} = "logout" ]; then
+                logout_usuario 
 
-        elif [ ${op} = "panda" ]; then
-            cat ${USER}
-            if [ -s "${USER}" ]; then
-                echo "Não está vazio"
-            elif [ ! -s "${USER}" ]; then
-                echo "Está vazio?"
+            elif [ ${op} = "msg" ]; then
+                remetente=$(cat "${USER}" | sed "s/\/tmp\///g")
+                mensagem_usuario ${op[0]} ${op[1]} ${remetente} ${op[@]}
+            else 
+                echo "Não há essa opção. Tente novamente!"
             fi
-
+        
         else 
-            echo "Não há essa opção."
+            echo "ERRO: Opção não disponível"
         fi
     done
 else

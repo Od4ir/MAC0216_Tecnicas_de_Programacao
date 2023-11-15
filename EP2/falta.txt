@@ -1,7 +1,0 @@
-Falta:
-
-1) Relatório;
-2) README.md
-3) Organizar o arquivo ep2.sh para entrega;
-4) Realizar testes;
-
