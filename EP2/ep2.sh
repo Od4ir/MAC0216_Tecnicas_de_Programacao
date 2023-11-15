@@ -224,6 +224,7 @@ elif [ $1 = "cliente" ]; then
     # Esse arquivo guarda as informações do pipe do usuário atual;
     USER=$(mktemp)
     trap "rm -f ${USER}" EXIT
+    trap "kill -15 ${LOOP_RECEBE_MSG}" EXIT
 
     echo -e " >>> SEJA BEM VINDX <<< \n"
     echo " Lista de opções disponíveis: "
@@ -260,6 +261,7 @@ elif [ $1 = "cliente" ]; then
         # Execução do comando escolhido pelo usuário:
         if [ ${op[0]} = "quit" ]; then
             echo "Saindo"
+            logout_usuario
             kill -15 ${LOOP_RECEBE_MSG}
             rm -f ${USER}
             exit 0
