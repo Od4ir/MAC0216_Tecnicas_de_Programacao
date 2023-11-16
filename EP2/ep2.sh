@@ -1,22 +1,43 @@
 #!/bin/bash
 # AUTOR:
-# Seu nome, NUSP e endereço de e-mail
+# # NOME:   Odair Gonçalves de Oliveira
+# # Nº USP: 13671581
+# # E-MAIL: od4ir@usp.br
 
 # DESCRIÇÃO:
-# Explique o que os programas fazem (Não diga apenas que ele é o EP2 da
-# disciplina tal, explique o que de fato os programas fazem)
+# O programa a seguir, escrito em bash script, simula um sistema de chat
+# com modos de servidor e cliente que permite a comunicação entre termi-
+# nais do seu computador. Cada modo conta com diferentes opções, sendo o
+# o modo servidor o principal para controle do sistema e o modo cliente
+# o modo responsável por permitir simular o uso de um usuário. 
 
 # COMO EXECUTAR:
-# Informe como executar o cliente e o servidor e quais os parâmetros
-# de linha de comando necessários
+# Para executar o modo servidor:
+# 1) Abra um terminal e na pasta com esse script digite:
+#    bash ep2.sh servidor
+# Esse comando irá executar o modo servidor do sistema de chat.
+
+# Para executar o modo cliente:
+# 1) Primeiro execute o servidor em algum terminal como foi descrito
+# anteriormente;
+# 2) Abra um novo terminal e na pasta com esse arquivo digite:
+#    bash ep2.sh cliente
+# Esse comando irá executar o modo cliente e permitir que outras opções
+# e comandos sejam realizados para esse tipo de modo.
 
 # TESTES:
-# Forneça explicações sobre o testa.c
+# Para testar a comunicação entre terminais diferentes façã:
+# 1) Execute o modo servidor em um terminal;
+# 2) Execute o modo cliente em dois terminais diferentes;
+# 3) Crie ao menos 2 usuários com os comandos para isso;
+# 4) Faça login com cada um deles nos dois terminais no modo cliente;
+# 5) Manda mensagens usando o nome dos usuários entre os terminais e se 
+# se divirta!
 
 # DEPENDÊNCIAS:
-# Informe o que é necessário para rodar o programa. Informações como o
-# SO onde você executou e sabe que ele funciona são importantes de serem
-# colocadas aqui.
+# O testes desse script foram feitos em um SO: Ubuntu 22.04.3 LTS
+# Também foi utilizado o curl curl 7.81.0
+
 
 LOGADOS="/tmp/logados.txt"
 USERS_INFO="/tmp/usuarios.txt"
@@ -127,17 +148,19 @@ function login_usuario {
 
 function logout_usuario {
     AUX=$(cat ${USER})
+    if [ -e "${AUX}" ]; then
+        USER_ATUAL=$(echo "${AUX}" | sed "s|/tmp/||")
+        echo "Logout de ${USER_ATUAL} feito!"
 
-    USER_ATUAL=$(echo "${AUX}" | sed "s|/tmp/||")
-    echo "Logout de ${USER_ATUAL} feito!"
-
-    MSG_TELEGRAM=()
-    MSG_TELEGRAM="<LOGOUT REALIZADO> Usuárix fez logout"
-    DATA=$(date)
-    envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
-    sed -i "/${USER_ATUAL}/d" "${LOGADOS}"
-    > ${USER}
-    rm -f ${AUX}
+        MSG_TELEGRAM=()
+        MSG_TELEGRAM="<LOGOUT REALIZADO> Usuárix fez logout"
+        DATA=$(date)
+        envia_msg_telegram "[ ${DATA} ] ${MSG_TELEGRAM}"
+        sed -i "/${USER_ATUAL}/d" "${LOGADOS}"
+        > ${USER}
+        echo "" >"/tmp/${USER_ATUAL}"
+        rm -f ${AUX}
+    fi
     # Faz logout do usuário do pipe atual;
 }
 
@@ -181,7 +204,7 @@ if [ $1 = "servidor" ]; then
             conteudo=$(cat ${LOGADOS})
             envia_msg_telegram "${conteudo}"
         fi
-        sleep 16s
+        sleep 1m
     done &
 
     LOOP_MSG_TELEGRAM=$!
@@ -244,8 +267,10 @@ elif [ $1 = "cliente" ]; then
             AUX=$(cat ${USER})
             if [ -e "${AUX}" ]; then
                 conteudo=$(cat <${AUX})
-                echo "${conteudo}"
-                echo -n "cliente> " 
+                if [ "${conteudo}" != "" ]; then
+                    echo "${conteudo}"
+                    echo -n "cliente> " 
+                fi
             fi
         fi
         sleep 1
@@ -261,8 +286,8 @@ elif [ $1 = "cliente" ]; then
         # Execução do comando escolhido pelo usuário:
         if [ ${op[0]} = "quit" ]; then
             echo "Saindo"
-            logout_usuario
             kill -15 ${LOOP_RECEBE_MSG}
+            logout_usuario
             rm -f ${USER}
             exit 0
 
