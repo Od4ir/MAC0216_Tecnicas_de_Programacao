@@ -1,0 +1,1 @@
+int paridade (int);
