@@ -5,6 +5,7 @@
 #include "hashliza.h"
 
 #define SIZE_BLOCO 16
+char vetorhex[] = {'0', '1', '2', '3', '4', '5', '6' ,'7' ,'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 void printa_int(char * aux) {
     int n = strlen(aux);
@@ -98,3 +99,15 @@ char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico) {
     return saidaPassoTres;
 }
 
+char * ep1Passo4Hash(char * saidaPassoTres) {
+    char hexac[16], hex_atual;
+    int div, resto;
+
+    for(int i = 0; i < SIZE_BLOCO; i++) {
+        hex_atual = saidaPassoTres[i];
+        div = hex_atual / SIZE_BLOCO;
+        resto = hex_atual % SIZE_BLOCO;
+        strcat(hexac, vetorhex[div]);
+        strcat(hexac, vetorhex[resto]);
+    }
+}
