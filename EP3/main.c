@@ -24,6 +24,7 @@ int vetorMagico[] = {122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 int main() {
     char nome[10000];
     // Leitura da entrada: 
+    printf("Digite uma string: \n");
     fgets(nome, 10000, stdin);
     // Remoção do '\n' que é lido junto da entrada: 
     int tam = strlen(nome);
