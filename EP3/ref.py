@@ -61,14 +61,19 @@ def passo3(num_blocos, saidaPassoDois):
     saidaPassoTres = [0] * (SIZE_BLOCO * 3)
 
     for i in range(num_blocos + 1):
+        print(i)
         for j in range(SIZE_BLOCO):
             saidaPassoTres[SIZE_BLOCO + j] = saidaPassoDois[i * SIZE_BLOCO + j]
             saidaPassoTres[2 * SIZE_BLOCO + j] = (saidaPassoTres[SIZE_BLOCO + j] ^ saidaPassoTres[j])
         temp = 0
         for j in range(SIZE_BLOCO + 2):
             for k in range(SIZE_BLOCO * 3):
+                # if j == 1 and i == 0:
+                #     print(j, k, temp)
                 temp = saidaPassoTres[k] ^ vetorMagico[temp]
                 saidaPassoTres[k] = temp
+                # if j == 1 and i == 0:
+                #     print(k, " --> ", temp)
             temp = (temp + j) % 256
 
     return saidaPassoTres
@@ -106,20 +111,21 @@ def main():
     """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
 
     saida = passo1(string_entrada)
-    print(saida)
+    # print(saida)
 
     """ ----- PASSO 2 - Cálculo e Contanação dos XOR ----- """
 
     saida = passo2(num_blocos, saida)
-    print(saida)
+    # print(saida)
 
     """ ----- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
 
     saidaPassoTres = passo3(num_blocos, saida)
+    print(saidaPassoTres)
 
     """ ----- PASSO 4 - Definição do Hash como um valor hexadecimal ----- """
 
     hexac = passo4(saidaPassoTres)
-    print(hexac)
+    # print(hexac)
 
 main()

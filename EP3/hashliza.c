@@ -33,7 +33,6 @@ char * ep1Passo1Preenche(char * stringEntrada) {
         return NULL;
     }
     int tam_entrada = (int) strlen(stringEntrada);
-    printf("%d\n", tam_entrada);
 
     int new_pos = SIZE_BLOCO - (tam_entrada % SIZE_BLOCO);
 
@@ -55,10 +54,10 @@ char * ep1Passo2XOR(char * saidaPassoUm, int * vetorMagico) {
     }
     char * novoBloco = malloc(sizeof(char) * (SIZE_BLOCO));
     int num_blocos = strlen(saidaPassoUm) / SIZE_BLOCO;
-    int novoValor = 0;
     for(int i = 0; i < SIZE_BLOCO; i++) {
         novoBloco[i] = 0;
     }
+    int novoValor = 0;
 
     for(int i = 0; i < num_blocos; i++) {
         for(int j = 0; j < SIZE_BLOCO; j++) {
@@ -73,6 +72,49 @@ char * ep1Passo2XOR(char * saidaPassoUm, int * vetorMagico) {
     return saidaPassoDois;    
 }
 
-char * ep1Passo3Comprime(char *) { 
-    
+char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico) { 
+    if(saidaPassoDois == NULL) {
+        return NULL;
+    }
+    int num_blocos = (int) (strlen(saidaPassoDois) / SIZE_BLOCO);
+    char * saidaPassoTres = malloc(sizeof(char) * (SIZE_BLOCO * 3));
+    for(int i = 0; i < SIZE_BLOCO * 3; i++) {
+        saidaPassoTres[i] = 0;
+    }
+    //printf("%d\n", (int) strlen(saidaPassoTres));
+
+    for(int i = 0; i < num_blocos; i++) {
+        for(int j = 0; j < SIZE_BLOCO; j++) { 
+            //printf("%d E %d\n", i, j);
+            saidaPassoTres[SIZE_BLOCO + j] = saidaPassoDois[i * SIZE_BLOCO + j];
+            saidaPassoTres[2 * SIZE_BLOCO + j] = (saidaPassoTres[SIZE_BLOCO + j] ^ saidaPassoTres[j]);
+        }
+        int temp = 0;
+        for(int j = 0; j < SIZE_BLOCO + 2; j++) {
+            for(int k = 0; k < SIZE_BLOCO * 3; k++) {
+
+                //if(j == 1 && i == 0) 
+                    //printf("%d %d %d\n", j, k, temp); 
+                
+                temp = saidaPassoTres[k] ^ vetorMagico[temp];
+                if (temp < 0) {
+                    temp = (256 + temp);
+                }
+                saidaPassoTres[k] = temp;
+                //if(j == 1 && i == 0) 
+                    //printf("%d  -->  %d\n", k, temp);
+
+            }
+            temp = (temp + j) % 256;
+        }
+    }
+    return saidaPassoTres;
 }
+
+/*
+0 15
+16 31
+32 47
+
+
+*/

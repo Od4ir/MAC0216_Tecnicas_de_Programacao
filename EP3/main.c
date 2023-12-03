@@ -39,6 +39,8 @@ int main() {
     //printa_int(saida);
 
     // Aplicação do PASSO 3:
+    saida = ep1Passo3Comprime(saida, vetorMagico);
+    printa_int(saida);
 
 
     return 0;
