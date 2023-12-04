@@ -41,7 +41,13 @@ int main() {
 
     // Aplicação do PASSO 3:
     saida = ep1Passo3Comprime(saida, vetorMagico);
-    printa_int(saida);
+    //printa_int(saida);
+
+    saida = ep1Passo4Hash(saida);
+    //printa_int(saida);
+
+    saida = ep1Passo4HashEmHexa(saida);
+    printa_char(saida);
 
 
     return 0;

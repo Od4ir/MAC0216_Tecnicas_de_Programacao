@@ -100,14 +100,40 @@ char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico) {
 }
 
 char * ep1Passo4Hash(char * saidaPassoTres) {
-    char hexac[16], hex_atual;
-    int div, resto;
+    char * hash;
+    hash = (char *) malloc(sizeof(char) * SIZE_BLOCO);
 
     for(int i = 0; i < SIZE_BLOCO; i++) {
-        hex_atual = saidaPassoTres[i];
-        div = hex_atual / SIZE_BLOCO;
-        resto = hex_atual % SIZE_BLOCO;
-        strcat(hexac, vetorhex[div]);
-        strcat(hexac, vetorhex[resto]);
+        hash[i] = saidaPassoTres[i];
     }
+    return hash;
+}
+
+char * ep1Passo4HashEmHexa(char * saidaEmHash) {
+    char * hexac;
+    hexac = (char *) malloc(sizeof(char) * (SIZE_BLOCO * 2));
+    for(int i = 0; i < SIZE_BLOCO * 2; i++) {
+        hexac[i] = '0';
+    }
+    int div, resto, j = 0, hash_atual;
+
+    for(int i = 0; i < SIZE_BLOCO; i++) {
+        hash_atual = saidaEmHash[i];
+        if(hash_atual < 0) {
+            hash_atual = (256 + hash_atual);
+        }
+        printf(" > %d\n", hash_atual);
+        div = hash_atual / SIZE_BLOCO;
+        resto = hash_atual % SIZE_BLOCO;
+        //printf("%d e %d \n", div, resto);
+        printf("%c\n", vetorhex[i]);
+        hexac[j] = vetorhex[div];
+        hexac[j + 1] = vetorhex[resto];
+        j = j + 2;
+        printf("%c %c\n", hexac[j - 1], hexac[j]);
+    }
+
+    printf("%s\n", hexac);
+
+    return hexac;
 }

@@ -86,8 +86,10 @@ def passo4(saidaPassoTres):
     for i in range(SIZE_BLOCO):
         # Convertendo valor em hexadecimal:
         hex_atu = saidaPassoTres[i]
+        print(hex_atu)
         div = hex_atu // SIZE_BLOCO
         resto = hex_atu % SIZE_BLOCO
+        # print(div, " e ", resto)
         hexac += str(vetorhex[div]) + str(vetorhex[resto])
     
     return hexac
@@ -126,6 +128,6 @@ def main():
     """ ----- PASSO 4 - Definição do Hash como um valor hexadecimal ----- """
 
     hexac = passo4(saidaPassoTres)
-    # print(hexac)
+    print(hexac)
 
 main()
