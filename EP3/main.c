@@ -33,21 +33,25 @@ int main() {
     // Aplicação do PASSO 1:
     char * saida;
     saida = ep1Passo1Preenche(nome);
+    printf("P1: ");
     //printa_int(saida);
+    tam = (int) strlen(saida);
+    printf("Tamanho: %d\n", tam);
 
     // Aplicação do PASSO 2:
-    saida = ep1Passo2XOR(saida, vetorMagico);
-    //printa_int(saida);
+    saida = ep1Passo2XOR(saida, vetorMagico, &tam);
+    printf("P2: ");
+    //printa_int(saida, 10);
 
     // Aplicação do PASSO 3:
     saida = ep1Passo3Comprime(saida, vetorMagico);
+    printf("P3: ");
     //printa_int(saida);
 
     saida = ep1Passo4Hash(saida);
     //printa_int(saida);
 
     saida = ep1Passo4HashEmHexa(saida);
-    printa_char(saida);
 
 
     return 0;

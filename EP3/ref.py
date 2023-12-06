@@ -61,7 +61,6 @@ def passo3(num_blocos, saidaPassoDois):
     saidaPassoTres = [0] * (SIZE_BLOCO * 3)
 
     for i in range(num_blocos + 1):
-        print(i)
         for j in range(SIZE_BLOCO):
             saidaPassoTres[SIZE_BLOCO + j] = saidaPassoDois[i * SIZE_BLOCO + j]
             saidaPassoTres[2 * SIZE_BLOCO + j] = (saidaPassoTres[SIZE_BLOCO + j] ^ saidaPassoTres[j])
@@ -86,7 +85,6 @@ def passo4(saidaPassoTres):
     for i in range(SIZE_BLOCO):
         # Convertendo valor em hexadecimal:
         hex_atu = saidaPassoTres[i]
-        print(hex_atu)
         div = hex_atu // SIZE_BLOCO
         resto = hex_atu % SIZE_BLOCO
         # print(div, " e ", resto)
@@ -113,12 +111,12 @@ def main():
     """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
 
     saida = passo1(string_entrada)
-    # print(saida)
+    print(saida)
 
     """ ----- PASSO 2 - Cálculo e Contanação dos XOR ----- """
 
     saida = passo2(num_blocos, saida)
-    # print(saida)
+    print(saida)
 
     """ ----- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
 
