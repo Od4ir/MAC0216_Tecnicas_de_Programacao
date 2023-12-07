@@ -111,17 +111,18 @@ def main():
     """ ----- PASSO 1 - Ajuste do Tamanho: ----- """
 
     saida = passo1(string_entrada)
-    print(saida)
+    print(tam_entrada)
+    # print("P1: ", saida)
 
     """ ----- PASSO 2 - Cálculo e Contanação dos XOR ----- """
 
     saida = passo2(num_blocos, saida)
-    print(saida)
+    # print("P2: ", saida)
 
     """ ----- PASSO 3 - Transformação dos n + 1 blocos em apenas 3 blocos ----- """
 
     saidaPassoTres = passo3(num_blocos, saida)
-    print(saidaPassoTres)
+    # print(">>", saidaPassoTres)
 
     """ ----- PASSO 4 - Definição do Hash como um valor hexadecimal ----- """
 

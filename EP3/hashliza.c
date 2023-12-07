@@ -30,16 +30,18 @@ printf("\n");
 printf("%d\n", (int) strlen(saidaPassoUm));*/
 
 char * ep1Passo1Preenche(char * stringEntrada) {
+    /* Verificação da validade dos parâmetros: */
     if(stringEntrada == NULL) {
         return NULL;
     }
+
+    /* Cópia da stringEntrada[] na saidaPassoUm[]: */
     int tam_entrada = (int) strlen(stringEntrada);
-
     int new_pos = SIZE_BLOCO - (tam_entrada % SIZE_BLOCO);
-
     char * saidaPassoUm = malloc(sizeof(char) * (tam_entrada + new_pos));
     strcpy(saidaPassoUm, stringEntrada);
 
+    /* Concatenação de novos elementos se for necessário para ficar com tamanho múltiplo de SIZE_BLOCO: */
     if(new_pos != SIZE_BLOCO) {
         for(int i = 0; i < new_pos; i++) {
             saidaPassoUm[tam_entrada + i] = new_pos;
@@ -49,40 +51,51 @@ char * ep1Passo1Preenche(char * stringEntrada) {
 }
 
 char * ep1Passo2XOR(char * saidaPassoUm, int * vetorMagico, int * tamanho) {
+    /* Verificação da validade dos parâmetros: */
     if(saidaPassoUm == NULL) {
         return NULL;
     }
 
-    char * novoBloco = malloc(sizeof(int) * (SIZE_BLOCO));
+
+    /* Alocação do novoBloco[] e cálculo do num_blocos: */
+    char * novoBloco = malloc(sizeof(char) * (SIZE_BLOCO));
     int num_blocos = strlen(saidaPassoUm) / SIZE_BLOCO;
     int novoValor = 0;
-
+    /* Passo principal da função 2: */
     for(int i = 0; i < num_blocos; i++) {
         for(int j = 0; j < SIZE_BLOCO; j++) {
-            novoValor = vetorMagico[(saidaPassoUm[i * SIZE_BLOCO + j] ^ novoValor)] ^ novoBloco[j];
+            novoValor = vetorMagico[((unsigned char) saidaPassoUm[i * SIZE_BLOCO + j] ^ novoValor)] ^ (unsigned char) novoBloco[j];
             novoBloco[j] = novoValor;
         }
     }
+
+    /* Alocação d saidaPassoDois[] e cópia da saidaPassoUm[] nela: */
     char * saidaPassoDois = malloc(sizeof(char) * (*tamanho + SIZE_BLOCO + 1));
     memcpy(saidaPassoDois, saidaPassoUm, *tamanho);
-    printf(" >> ");
-    for(int i = *tamanho; i < *tamanho + SIZE_BLOCO; i++) {
-        saidaPassoDois[i] = novoBloco[*tamanho - i];
+
+    /* Concatenação do novoBloco[] na saidaPassoDois[]: */
+    for(int i = 0; i < SIZE_BLOCO; i++) {
+        saidaPassoDois[*tamanho + i] = novoBloco[i];
     }
 
-    printa_int(saidaPassoDois, SIZE_BLOCO + *tamanho);
-    printf("\n");
+    /* Atualização do 'tamanho' e inserção no '0' ao final do vetor de char: */
+    *tamanho = *tamanho + SIZE_BLOCO + 1;
+    saidaPassoDois[*tamanho - 1] = '\0';
 
     return saidaPassoDois;    
 }
 
-char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico) { 
+char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico, int * tamanho) { 
+    /* Verificação da validade dos parâmetros: */
     if(saidaPassoDois == NULL) {
         return NULL;
     }
-    int num_blocos = (int) (strlen(saidaPassoDois) / SIZE_BLOCO);
-    char * saidaPassoTres = malloc(sizeof(char) * (SIZE_BLOCO * 3));
 
+    /* Cálculo do 'num_blocos' e alocação da saidaPassoTres[]: */
+    int num_blocos = *tamanho / SIZE_BLOCO;
+    char * saidaPassoTres = malloc(sizeof(char) * (SIZE_BLOCO * 3 + 1));
+
+    /* Execução do passo principal da função 3: */
     for(int i = 0; i < num_blocos; i++) {
         for(int j = 0; j < SIZE_BLOCO; j++) { 
             saidaPassoTres[SIZE_BLOCO + j] = saidaPassoDois[i * SIZE_BLOCO + j];
@@ -100,6 +113,8 @@ char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico) {
             temp = (temp + j) % 256;
         }
     }
+    saidaPassoTres[SIZE_BLOCO*3] = '\0';
+    *tamanho = SIZE_BLOCO * 3 + 1;
     return saidaPassoTres;
 }
 

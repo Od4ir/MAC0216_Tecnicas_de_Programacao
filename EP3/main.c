@@ -22,31 +22,32 @@ int vetorMagico[] = {122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 180, 233, 230, 31, 76, 55, 18, 9, 32, 82, 70};
 
 int main() {
-    char nome[10000];
+    char nome[100005];
     // Leitura da entrada: 
     printf("Digite uma string: \n");
-    fgets(nome, 10000, stdin);
+    fgets(nome, 100005, stdin);
     // Remoção do '\n' que é lido junto da entrada: 
-    int tam = strlen(nome);
-    nome[tam - 1] = 0;
+    int tam = (int) strlen(nome);
+    nome[(int)strlen(nome) - 1] = 0;
+    tam = strlen(nome);
 
     // Aplicação do PASSO 1:
     char * saida;
+    printf(">>>> %d\n", tam);
     saida = ep1Passo1Preenche(nome);
     printf("P1: ");
-    //printa_int(saida);
     tam = (int) strlen(saida);
-    printf("Tamanho: %d\n", tam);
+    //printa_int(saida, tam);
 
     // Aplicação do PASSO 2:
     saida = ep1Passo2XOR(saida, vetorMagico, &tam);
-    printf("P2: ");
-    //printa_int(saida, 10);
+    //printf("P2: ");
+    //printa_int(saida, tam);
 
     // Aplicação do PASSO 3:
-    saida = ep1Passo3Comprime(saida, vetorMagico);
-    printf("P3: ");
-    //printa_int(saida);
+    saida = ep1Passo3Comprime(saida, vetorMagico, &tam);
+    //printf("P3: ");
+    //printa_int(saida, 49);
 
     saida = ep1Passo4Hash(saida);
     //printa_int(saida);
