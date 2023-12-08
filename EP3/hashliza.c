@@ -7,28 +7,6 @@
 #define SIZE_BLOCO 16
 char vetorhex[] = {'0', '1', '2', '3', '4', '5', '6' ,'7' ,'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-void printa_int(char * aux, int tamanho) {
-    int n = tamanho;
-    for(int i = 0; i < n; i++) {
-        printf("%d ", (unsigned char) aux[i]);
-    }
-    printf("\n");
-}
-
-void printa_char(char * aux) {
-    int n = strlen(aux);
-    for(int i = 0; i < n; i++) {
-        printf("%c ", aux[i]);
-    }
-    printf("\n");
-}
-
-/*printa_char(saidaPassoUm);
-printf("\n");
-printa_int(saidaPassoUm);
-printf("\n");
-printf("%d\n", (int) strlen(saidaPassoUm));*/
-
 int vetor_magico_valido(int * vetor) {
     if(vetor == NULL) return 0;
     int * validos = malloc(sizeof(int) * 256);
@@ -144,6 +122,7 @@ char * ep1Passo4Hash(char * saidaPassoTres) {
     char * hash;
     hash = (char *) malloc(sizeof(char) * SIZE_BLOCO);
 
+    /* Seleção dos 16 primeiros caracteres da string saidaPassoTres[]: */
     for(int i = 0; i < SIZE_BLOCO; i++) {
         hash[i] = saidaPassoTres[i];
     }
@@ -157,11 +136,9 @@ char * ep1Passo4HashEmHexa(char * saidaEmHash) {
     }
     char * hexac;
     hexac = (char *) malloc(sizeof(char) * (SIZE_BLOCO * 2));
-    for(int i = 0; i < SIZE_BLOCO * 2; i++) {
-        hexac[i] = '0';
-    }
     int div, resto, j = 0, hash_atual;
 
+    /* Conversão da string saidaEmHash[] em algarismos hexadecimais: */
     for(int i = 0; i < SIZE_BLOCO; i++) {
         hash_atual = saidaEmHash[i];
         if(hash_atual < 0) {

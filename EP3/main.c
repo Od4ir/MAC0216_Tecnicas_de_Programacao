@@ -27,8 +27,6 @@ int main() {
     printf("Digite uma string: \n");
     fgets(nome, 100005, stdin);
 
-    // Verificação da função de validar vetorMagico:
-
     // Remoção do '\n' que é lido junto da entrada: 
     int tam = (int) strlen(nome);
     nome[(int)strlen(nome) - 1] = 0;
@@ -38,23 +36,16 @@ int main() {
     char * saida;
     saida = ep1Passo1Preenche(nome);
     tam = (int) strlen(saida);
-    //printa_int(saida, tam);
 
     // Aplicação do PASSO 2:
     saida = ep1Passo2XOR(saida, vetorMagico, &tam);
-    //printf("P2: ");
-    //printa_int(saida, tam);
 
     // Aplicação do PASSO 3:
     saida = ep1Passo3Comprime(saida, vetorMagico, tam);
-    //printf("P3: ");
-    //printa_int(saida, 49);
 
+    // Aplicação do PASSO 4 e Impressão do código hash:
     saida = ep1Passo4Hash(saida);
-    //printa_int(saida);
-
     saida = ep1Passo4HashEmHexa(saida);
-
 
     return 0;
 }
