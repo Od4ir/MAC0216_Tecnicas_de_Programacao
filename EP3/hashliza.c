@@ -7,6 +7,34 @@
 #define SIZE_BLOCO 16
 char vetorhex[] = {'0', '1', '2', '3', '4', '5', '6' ,'7' ,'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
+char * ep3CriaVetorMagico(int seed) {
+    char * vetorMagico, * aux;
+    vetorMagico = malloc(sizeof(int) * 256);
+    aux = malloc(sizeof(int) * 256);
+
+    for(int i = 0; i < 256; i++) {
+        vetorMagico[i] = -1;
+        aux[i] = i;
+    }
+    srand(seed);
+
+    int i, j = 0;
+
+    while(j < 256) {
+        i = (rand() % 256);
+        if(vetorMagico[i] == -1) {
+            vetorMagico[i] = aux[j];
+            j++;
+        }
+    }
+    for(int i = 0; i < 256; i++) {
+        printf("%d ", (unsigned char) vetorMagico[i]);
+    }
+    printf("\n");
+
+    return vetorMagico;
+}
+
 int vetor_magico_valido(int * vetor) {
     if(vetor == NULL) return 0;
     int * validos = malloc(sizeof(int) * 256);
