@@ -23,6 +23,14 @@ int vetorMagico[] = {122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 180, 233, 230, 31, 76, 55, 18, 9, 32, 82, 70};
 
 int main() {
+    int seed;
+    scanf("%d", &seed);
+    char * vetor;
+
+    vetor = ep3CriaVetorMagico(seed);
+    printf("%d\n", vetor[0]);
+
+    /* 
     char nome[100005];
     // Leitura da entrada: 
     printf("Digite uma string: \n");
@@ -37,7 +45,7 @@ int main() {
     nome[(int)strlen(nome) - 1] = 0;
     tam = strlen(nome); 
     printf("Tamanho: %d\n", tam);
-    /* 
+
     // Aplicação do PASSO 1:
     char * saida;
     saida = ep1Passo1Preenche(nome);
@@ -60,8 +68,6 @@ int main() {
     saida = ep1Passo4HashEmHexa(saida);
 
     */
-    double aux = ep3CalculaEntropiaShannon(nome, 2);
-    printf("%f\n", aux);
 
 
     return 0;
