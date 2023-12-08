@@ -85,14 +85,14 @@ char * ep1Passo2XOR(char * saidaPassoUm, int * vetorMagico, int * tamanho) {
     return saidaPassoDois;    
 }
 
-char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico, int * tamanho) { 
+char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico, int tamanho) { 
     /* Verificação da validade dos parâmetros: */
     if(saidaPassoDois == NULL) {
         return NULL;
     }
 
     /* Cálculo do 'num_blocos' e alocação da saidaPassoTres[]: */
-    int num_blocos = *tamanho / SIZE_BLOCO;
+    int num_blocos = tamanho / SIZE_BLOCO;
     char * saidaPassoTres = malloc(sizeof(char) * (SIZE_BLOCO * 3 + 1));
 
     /* Execução do passo principal da função 3: */
@@ -113,8 +113,8 @@ char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico, int * tamanho
             temp = (temp + j) % 256;
         }
     }
+    /* Inserindo o '0' ao final da string: */
     saidaPassoTres[SIZE_BLOCO*3] = '\0';
-    *tamanho = SIZE_BLOCO * 3 + 1;
     return saidaPassoTres;
 }
 
@@ -141,17 +141,12 @@ char * ep1Passo4HashEmHexa(char * saidaEmHash) {
         if(hash_atual < 0) {
             hash_atual = (256 + hash_atual);
         }
-        //printf(" > %d\n", hash_atual);
         div = hash_atual / SIZE_BLOCO;
         resto = hash_atual % SIZE_BLOCO;
-        //printf("%d e %d \n", div, resto);
-        //printf("%c\n", vetorhex[i]);
         hexac[j] = vetorhex[div];
         hexac[j + 1] = vetorhex[resto];
         j = j + 2;
-        //printf("%c %c\n", hexac[j - 1], hexac[j]);
     }
-
     printf("%s\n", hexac);
 
     return hexac;

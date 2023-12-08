@@ -26,6 +26,7 @@ int main() {
     // Leitura da entrada: 
     printf("Digite uma string: \n");
     fgets(nome, 100005, stdin);
+
     // Remoção do '\n' que é lido junto da entrada: 
     int tam = (int) strlen(nome);
     nome[(int)strlen(nome) - 1] = 0;
@@ -33,7 +34,6 @@ int main() {
 
     // Aplicação do PASSO 1:
     char * saida;
-    printf(">>>> %d\n", tam);
     saida = ep1Passo1Preenche(nome);
     printf("P1: ");
     tam = (int) strlen(saida);
@@ -45,7 +45,7 @@ int main() {
     //printa_int(saida, tam);
 
     // Aplicação do PASSO 3:
-    saida = ep1Passo3Comprime(saida, vetorMagico, &tam);
+    saida = ep1Passo3Comprime(saida, vetorMagico, tam);
     //printf("P3: ");
     //printa_int(saida, 49);
 
