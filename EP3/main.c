@@ -28,7 +28,7 @@ int main() {
     printf("Digite uma string: \n");
     fgets(nome, 100005, stdin);
 
-  
+
 
     // Verificação da função de validar vetorMagico:
 
