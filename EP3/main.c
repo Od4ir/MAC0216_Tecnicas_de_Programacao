@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include "hashliza.h"
+#include "shannon.h"
 int vetorMagico[] = {122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 114, 236, 106, 83, 117, 16, 189, 211, 51, 231, 143, 118, 248, 148, 218,
 245, 24, 61, 66, 73, 205, 185, 134, 215, 35, 213, 41, 0, 174, 240, 177,
@@ -27,13 +28,16 @@ int main() {
     printf("Digite uma string: \n");
     fgets(nome, 100005, stdin);
 
+  
+
     // Verificação da função de validar vetorMagico:
 
     // Remoção do '\n' que é lido junto da entrada: 
     int tam = (int) strlen(nome);
     nome[(int)strlen(nome) - 1] = 0;
-    tam = strlen(nome);
-
+    tam = strlen(nome); 
+    printf("Tamanho: %d\n", tam);
+    /* 
     // Aplicação do PASSO 1:
     char * saida;
     saida = ep1Passo1Preenche(nome);
@@ -54,6 +58,10 @@ int main() {
     //printa_int(saida);
 
     saida = ep1Passo4HashEmHexa(saida);
+
+    */
+    double aux = ep3CalculaEntropiaShannon(nome, 2);
+    printf("%f\n", aux);
 
 
     return 0;
