@@ -29,9 +29,25 @@ printa_int(saidaPassoUm);
 printf("\n");
 printf("%d\n", (int) strlen(saidaPassoUm));*/
 
+int vetor_magico_valido(int * vetor) {
+    if(vetor == NULL) return 0;
+    int * validos = malloc(sizeof(int) * 256);
+    for(int i = 0; i < 256; i++) {
+        if(validos[vetor[i]] == 0) {
+            validos[vetor[i]] = 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    validos = NULL;
+    return 1;
+}
+
 char * ep1Passo1Preenche(char * stringEntrada) {
     /* Verificação da validade dos parâmetros: */
     if(stringEntrada == NULL) {
+        printf("!!! ERRO !!! - String de entrada da função 'ep1Passo1Preenche' é NULL! \n");
         return NULL;
     }
 
@@ -51,11 +67,10 @@ char * ep1Passo1Preenche(char * stringEntrada) {
 }
 
 char * ep1Passo2XOR(char * saidaPassoUm, int * vetorMagico, int * tamanho) {
-    /* Verificação da validade dos parâmetros: */
-    if(saidaPassoUm == NULL) {
+    if(saidaPassoUm == NULL || vetor_magico_valido(vetorMagico) == 0 || *tamanho <= 0) {
+        printf("!!! ERRO !!! - Um ou mais parâmetros da função 'ep1Passo3Comprime' está incorreto! \n");
         return NULL;
     }
-
 
     /* Alocação do novoBloco[] e cálculo do num_blocos: */
     char * novoBloco = malloc(sizeof(char) * (SIZE_BLOCO));
@@ -77,6 +92,7 @@ char * ep1Passo2XOR(char * saidaPassoUm, int * vetorMagico, int * tamanho) {
     for(int i = 0; i < SIZE_BLOCO; i++) {
         saidaPassoDois[*tamanho + i] = novoBloco[i];
     }
+    free(novoBloco);
 
     /* Atualização do 'tamanho' e inserção no '0' ao final do vetor de char: */
     *tamanho = *tamanho + SIZE_BLOCO + 1;
@@ -87,7 +103,8 @@ char * ep1Passo2XOR(char * saidaPassoUm, int * vetorMagico, int * tamanho) {
 
 char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico, int tamanho) { 
     /* Verificação da validade dos parâmetros: */
-    if(saidaPassoDois == NULL) {
+    if(saidaPassoDois == NULL || vetor_magico_valido(vetorMagico) == 0|| tamanho <= 0) {
+        printf("!!! ERRO !!! - Um ou mais parâmetros da função 'ep1Passo3Comprime' está incorreto! \n");
         return NULL;
     }
 
@@ -113,12 +130,17 @@ char * ep1Passo3Comprime(char * saidaPassoDois, int * vetorMagico, int tamanho) 
             temp = (temp + j) % 256;
         }
     }
+
     /* Inserindo o '0' ao final da string: */
     saidaPassoTres[SIZE_BLOCO*3] = '\0';
     return saidaPassoTres;
 }
 
 char * ep1Passo4Hash(char * saidaPassoTres) {
+    if(saidaPassoTres == NULL) {
+    printf("!!! ERRO !!! - String de entrada da função 'ep1Passo4Hash' é NULL! \n");
+        return NULL;
+    }
     char * hash;
     hash = (char *) malloc(sizeof(char) * SIZE_BLOCO);
 
@@ -129,6 +151,10 @@ char * ep1Passo4Hash(char * saidaPassoTres) {
 }
 
 char * ep1Passo4HashEmHexa(char * saidaEmHash) {
+    if(saidaEmHash == NULL) {
+        printf("!!! ERRO !!! - String de entrada da função 'ep1Passo4Hash' é NULL! \n");
+        return NULL;
+    }
     char * hexac;
     hexac = (char *) malloc(sizeof(char) * (SIZE_BLOCO * 2));
     for(int i = 0; i < SIZE_BLOCO * 2; i++) {

@@ -27,6 +27,8 @@ int main() {
     printf("Digite uma string: \n");
     fgets(nome, 100005, stdin);
 
+    // Verificação da função de validar vetorMagico:
+
     // Remoção do '\n' que é lido junto da entrada: 
     int tam = (int) strlen(nome);
     nome[(int)strlen(nome) - 1] = 0;
@@ -35,7 +37,6 @@ int main() {
     // Aplicação do PASSO 1:
     char * saida;
     saida = ep1Passo1Preenche(nome);
-    printf("P1: ");
     tam = (int) strlen(saida);
     //printa_int(saida, tam);
 

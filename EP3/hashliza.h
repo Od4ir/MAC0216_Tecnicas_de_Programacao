@@ -6,3 +6,5 @@ char * ep1Passo3Comprime(char *, int *, int);
 char * ep1Passo4Hash(char *);
 char * ep1Passo4HashEmHexa(char *);
 char * ep3CriaVetorMagico(int);
+
+int vetor_magico_valido(int *);
