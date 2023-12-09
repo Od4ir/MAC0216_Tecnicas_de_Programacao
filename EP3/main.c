@@ -70,5 +70,8 @@ int main() {
     saida = ep1Passo4HashEmHexa(saida);
     printf("%s\n", saida);
 
+    double entropia = ep3CalculaEntropiaShannon(nome, 2);
+    printf("Entropia: %f\n", entropia);
+
     return 0;
 }
