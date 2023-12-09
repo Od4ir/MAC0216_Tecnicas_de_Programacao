@@ -1,8 +1,8 @@
+#include "shannon.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "shannon.h"
 
 /* É para ser uma biblioteca estática. Para compilar e gerar o .so:
  * gcc -c -fPIC -o shannon.o shannon.c
@@ -43,6 +43,5 @@ long double ep3CalculaEntropiaShannon(char * stringEntrada, int base) {
         }
         
     }
-
     return -1 * resp;
 }

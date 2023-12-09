@@ -23,21 +23,22 @@ int vetorMagico[] = {122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 180, 233, 230, 31, 76, 55, 18, 9, 32, 82, 70};
 
 int main() {
-    int seed;
+    /*int seed;
     scanf("%d", &seed);
     char * vetor;
 
     vetor = ep3CriaVetorMagico(seed);
-    printf("%d\n", vetor[0]);
+    printf("%d\n", vetor[0]); */
 
-    /* 
+
     char nome[100005];
     // Leitura da entrada: 
     printf("Digite uma string: \n");
     fgets(nome, 100005, stdin);
 
-
-
+    double f = ep3CalculaEntropiaShannon(nome, 256);
+    printf("%f\n", f);
+    /* 
     // Verificação da função de validar vetorMagico:
 
     // Remoção do '\n' que é lido junto da entrada: 
