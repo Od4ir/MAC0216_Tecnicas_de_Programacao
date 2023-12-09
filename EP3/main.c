@@ -23,10 +23,6 @@ int vetorMagico[] = {122, 77, 153, 59, 173, 107, 19, 104, 123, 183, 75, 10,
 180, 233, 230, 31, 76, 55, 18, 9, 32, 82, 70};
 
 int main() {
-    int seed;
-    scanf("%d", &seed);
-    char * vetor;
-
     char nome[100005];
     // Leitura da entrada: 
     printf("Digite uma string: \n");
