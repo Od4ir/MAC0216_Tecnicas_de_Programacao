@@ -7,18 +7,18 @@
 long double ep3CalculaEntropiaShannon(char * stringEntrada, int base) {
     int tam = strlen(stringEntrada);
     int menor = 10000000, maior = -10000000;
-
     for(int i = 0; i < tam; i++) {
-        //printf("%d\n", stringEntrada[i]);
-        if(stringEntrada[i] > maior) {
-            maior = stringEntrada[i];
+        int atual = stringEntrada[i];
+        if(atual < 0) {
+            atual = 256 + atual;
         }
-        if(stringEntrada[i] < menor) {
-            menor = stringEntrada[i];
+        if(atual > maior) {
+            maior = atual;
+        }
+        if(atual < menor) {
+            menor = atual;
         }
     }
-    printf("maior: %d, menor: %d\n", maior, menor);
-
     // Se só tem um mesmo elemento, então:
     // log(probabilidade = 1) = 0, logo o valor vai ser 0;
     if(maior == menor) return 0;
@@ -28,7 +28,6 @@ long double ep3CalculaEntropiaShannon(char * stringEntrada, int base) {
 
     for(int i = 0; i < tam; i++) {
         probabilidades[stringEntrada[i] - menor] += 1;
-        printf("%c --> %d\n", stringEntrada[i], probabilidades[stringEntrada[i] - menor]);
     }
 
     long double resp = 0;

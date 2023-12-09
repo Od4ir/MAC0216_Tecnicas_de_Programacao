@@ -33,7 +33,7 @@ char * ep1Passo4HashEmHexa(char *);
 /// @brief Função que recebe um inteiro e o utiliza como 'seed' da função 'srand()' para gerar valores aleatórios e compor um vetor com valores de 0 a 255 aleatorizado;
 /// @param seed: Semente para geração dos números aleatórios;
 /// @return Um vetor de inteiros de 0 a 255 aleatorizado;
-char * ep3CriaVetorMagico(int);
+int * ep3CriaVetorMagico(int);
 
 /* --------- FUNÇÕES AUXILIARES: --------- */
 

@@ -48,5 +48,7 @@ int main() {
     saida = ep1Passo4Hash(saida);
     saida = ep1Passo4HashEmHexa(saida);
 
+    printf("%s\n", saida);
+    
     return 0;
 }
