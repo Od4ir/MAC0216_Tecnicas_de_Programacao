@@ -36,10 +36,11 @@ int main() {
     printf("Digite uma string: \n");
     fgets(nome, 100005, stdin);
 
+    /* 
     double f = ep3CalculaEntropiaShannon(nome, 256);
     printf("%f\n", f);
-    /* 
     // Verificação da função de validar vetorMagico:
+    */
 
     // Remoção do '\n' que é lido junto da entrada: 
     int tam = (int) strlen(nome);
@@ -67,9 +68,7 @@ int main() {
     //printa_int(saida);
 
     saida = ep1Passo4HashEmHexa(saida);
-
-    */
-
+    printf("%s\n", saida);
 
     return 0;
 }

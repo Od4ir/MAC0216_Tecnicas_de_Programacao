@@ -15,8 +15,8 @@ void printa_int(char * aux, int tamanho) {
     printf("\n");
 }
 
-void printa_char(char * aux) {
-    int n = strlen(aux);
+void printa_char(char * aux, int tamanho) {
+    int n = tamanho;
     for(int i = 0; i < n; i++) {
         printf("%c ", aux[i]);
     }
@@ -29,8 +29,8 @@ printa_int(saidaPassoUm);
 printf("\n");
 printf("%d\n", (int) strlen(saidaPassoUm));*/
 
-char * ep3CriaVetorMagico(int seed) {
-    char * vetorMagico, * aux;
+int * ep3CriaVetorMagico(int seed) {
+    int * vetorMagico, * aux;
     vetorMagico = malloc(sizeof(int) * 256);
     aux = malloc(sizeof(int) * 256);
 
@@ -49,11 +49,6 @@ char * ep3CriaVetorMagico(int seed) {
             j++;
         }
     }
-    for(int i = 0; i < 256; i++) {
-        printf("%d ", (unsigned char) vetorMagico[i]);
-    }
-    printf("\n");
-
     return vetorMagico;
 }
 
@@ -201,7 +196,7 @@ char * ep1Passo4HashEmHexa(char * saidaEmHash) {
         hexac[j + 1] = vetorhex[resto];
         j = j + 2;
     }
-    printf("%s\n", hexac);
+    //printf("%s\n", hexac);
 
     return hexac;
 }

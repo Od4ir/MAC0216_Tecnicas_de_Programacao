@@ -3,16 +3,18 @@
 #include <string.h>
 #include <math.h>
 #include "hashliza.h"
-#include <shannon.h>
+#include "shannon.h"
 #include <sys/time.h>
+
+double tempos[7][10];
 
 double calcula_tempo(struct timeval inicio, struct timeval fim) {
     double tempo = (fim.tv_sec - inicio.tv_sec) + (fim.tv_usec - inicio.tv_usec) / 1e6;
-    printf("%.3f\n", tempo);
+    //printf("%.3f\n", tempo);
     return tempo;
 }
 
-void testa_funcoes(char * teste, int ** tempos, int n_teste) {
+double testa_funcoes(char * teste) {
     struct timeval inicio, fim;
     double tempo_atual, entropia;
     int * vetorMagico;
@@ -23,7 +25,7 @@ void testa_funcoes(char * teste, int ** tempos, int n_teste) {
     gettimeofday(&fim, NULL);
 
     tempo_atual = calcula_tempo(inicio, fim);
-    tempos[0][n_teste] = tempo_atual;
+    tempos[0][0] = tempo_atual;
 
 
     // Função 1 - ep3CalculaEntropiaShannon:
@@ -32,87 +34,117 @@ void testa_funcoes(char * teste, int ** tempos, int n_teste) {
     gettimeofday(&fim, NULL);
 
     tempo_atual = calcula_tempo(inicio, fim);
-    tempos[1][n_teste] = tempo_atual;
+    tempos[1][0] = tempo_atual;
 
+    for(int i = 0; i < 10; i++) {
+        // Função 2 - ep1Passo1Preenche:
+        gettimeofday(&inicio, NULL);
+        teste = ep1Passo1Preenche(teste);
+        gettimeofday(&fim, NULL);
 
-    // Função 2 - ep1Passo1Preenche:
-    gettimeofday(&inicio, NULL);
-    teste = ep1Passo1Preenche(teste);
-    gettimeofday(&fim, NULL);
+        tempo_atual = calcula_tempo(inicio, fim);
+        tempos[2][i] = tempo_atual;
+        int tamanho = strlen(teste);
 
-    tempo_atual = calcula_tempo(inicio, fim);
-    tempos[1][n_teste] = tempo_atual;
+        // Função 3 - ep1Passo2XOR:
+        gettimeofday(&inicio, NULL);
+        teste = ep1Passo2XOR(teste, vetorMagico, &tamanho);
+        gettimeofday(&fim, NULL);
 
+        tempo_atual = calcula_tempo(inicio, fim);
+        tempos[3][i] = tempo_atual;
 
+        // Função 4 - ep1Passo3Comprime:
+        gettimeofday(&inicio, NULL);
+        teste = ep1Passo3Comprime(teste, vetorMagico, tamanho);
+        gettimeofday(&fim, NULL);
 
-    gettimeofday(&inicio, NULL);
-    teste = ep1Passo1Preenche(teste);
-    gettimeofday(&fim, NULL);
+        tempo_atual = calcula_tempo(inicio, fim);
+        tempos[4][i] = tempo_atual;
 
-    gettimeofday(&inicio, NULL);
-    teste = ep1Passo1Preenche(teste);
-    gettimeofday(&fim, NULL);
+        // Função 5 - ep1Passo4Hash:
+        gettimeofday(&inicio, NULL);
+        teste = ep1Passo4Hash(teste);
+        gettimeofday(&fim, NULL);
 
-    gettimeofday(&inicio, NULL);
-    teste = ep1Passo1Preenche(teste);
-    gettimeofday(&fim, NULL);
+        tempo_atual = calcula_tempo(inicio, fim);
+        tempos[5][i] = tempo_atual;
 
-    gettimeofday(&inicio, NULL);
-    teste = ep1Passo1Preenche(teste);
-    gettimeofday(&fim, NULL);
+        // Função 6 - ep1Passo4HashEmHexa:
+        gettimeofday(&inicio, NULL);
+        teste = ep1Passo4HashEmHexa(teste);
+        gettimeofday(&fim, NULL);
 
-    gettimeofday(&inicio, NULL);
-    teste = ep1Passo1Preenche(teste);
-    gettimeofday(&fim, NULL);
-
-    return tempo_atual;
+        tempo_atual = calcula_tempo(inicio, fim);
+        tempos[6][i] = tempo_atual;
+    }
+    printf("Hexadecimal: %s\n", teste);
+    return entropia;
 }
 
-int main() {
-    /* ------ Teste 1 - Strings nulas: ------ */
-
-    struct timeval inicio, fim;
-    double tempos[7][10];
-
-    for(int i = 0; i < 7; i++) {
-        tempos[i][0] = 1e6;
-        tempos[i][1] = -1;
-    }
+char * gera_string(int tamanho, int seed) {
+    char * string_nova;
+    string_nova = malloc(sizeof(char) * tamanho);
+    srand(seed);
 
     int i = 0;
-    double tempo_atu;
-
-    while(i < 10) {
-        char * aux = NULL;
-
-        gettimeofday(&inicio, NULL);
-        aux = ep1Passo1Preenche(aux);
-        gettimeofday(&fim, NULL);
-        tempo_atu = calcula_tempo(inicio, fim);
-
-        if(tempo_atu < tempos[0][0]) {
-            tempos[0][0] = tempo_atu;
+    while(i < tamanho) { 
+        int aux = rand() % 256;
+        if(aux != 0) {
+            string_nova[i] = aux;
+            i++;
         }
-        if(tempo_atu > tempos[0][1]) {
-            tempos[0][1] = tempo_atu;
+    }
+    return string_nova;
+}
+
+double tempo_func(int func) {
+    double maior = -1, menor = 1e6, soma = 0;
+    for(int j = 0; j < 10; j++) {
+        soma += tempos[func][j];
+        if(tempos[func][j] < menor) {
+            menor = tempos[func][j];
         }
-
-
-
-
-
+        if(tempos[func][j] > maior) {
+            maior = tempos[func][j];
+        }
     }
+    printf(" > Função %d: %.6f  ; %.6f  ;  %.6f\n", func, soma/10, menor, maior);
+    return soma;
+}
 
-
-
-    /* ------ Teste 2 - */
-
-
-
-
-
-
-        return 0;
+void printa_tempos(int tamanho) {
+    printf("Teste com string de tamanho: %d\n", tamanho);
+    double soma = 0;
+    for(int i = 0; i < 7; i++) {
+        soma += tempo_func(i);
     }
+    printf(">>> Tempo TOTAL: %.6f\n", soma);
 
-// https://www.delftstack.com/pt/howto/c/gettimeofday-in-c/
+    printf("\n");
+}
+
+
+int main() {
+
+    int tamanho = 10, seed = 1;
+
+    for(int i = 0; i < 10; i++) {
+        printf("TESTE %d:\n", i);
+        for(int k = 0; k < 7; k++) {
+            for(int j = 0; j < 10; j++) {
+                tempos[k][j] = 0;
+            }
+        }
+        char * teste;
+        teste = gera_string(tamanho, seed);
+        //printa_int(teste, tamanho);
+        double entropia = testa_funcoes(teste);
+        printf("Entropia: %f\n", entropia);
+        printa_tempos(tamanho);
+        tamanho = tamanho * 10;
+    }
+    return 0;
+}
+
+// https://www.delftstack.com/pt/howto/c/gettimeofday-in-c/ 
