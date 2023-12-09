@@ -1,8 +1,8 @@
+#include "shannon.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "shannon.h"
 
 long double ep3CalculaEntropiaShannon(char * stringEntrada, int base) {
     int tam = strlen(stringEntrada);
@@ -17,6 +17,7 @@ long double ep3CalculaEntropiaShannon(char * stringEntrada, int base) {
             menor = stringEntrada[i];
         }
     }
+    printf("maior: %d, menor: %d\n", maior, menor);
 
     // Se só tem um mesmo elemento, então:
     // log(probabilidade = 1) = 0, logo o valor vai ser 0;
@@ -38,6 +39,5 @@ long double ep3CalculaEntropiaShannon(char * stringEntrada, int base) {
         }
         
     }
-
     return -1 * resp;
 }
