@@ -113,7 +113,8 @@ double tempo_func(int func) {
 }
 
 void printa_tempos(int tamanho) {
-    printf("Teste com string de tamanho: %d\n", tamanho);
+    printf("Teste com string de tamanho: %d\n\n", tamanho);
+    printf(" >>> Tempo:   (médio)      (menor)     (maior)\n");
     double soma = 0;
     for(int i = 0; i < 7; i++) {
         soma += tempo_func(i);
@@ -124,10 +125,9 @@ void printa_tempos(int tamanho) {
 
 
 int main() {
+    int tamanho = 10, seed = 1, num_testes = 5, fator_aumento_tamanho = 10;
 
-    int tamanho = 10, seed = 1;
-
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < num_testes; i++) {
         printf("TESTE %d:\n", i + 1);
         for(int k = 0; k < 7; k++) {
             for(int j = 0; j < 10; j++) {
@@ -140,9 +140,17 @@ int main() {
         double entropia = testa_funcoes(teste);
         printf("Entropia: %f\n", entropia);
         printa_tempos(tamanho);
-        tamanho = tamanho * 10;
+        tamanho = tamanho * fator_aumento_tamanho;
     }
+
+    printf("Legenda Funções: \n");
+    printf(" Função 0: int * ep3CriaVetorMagico(int);\n");
+    printf(" Função 1: char * ep1Passo1Preenche(char * );\n");
+    printf(" Função 2: long double ep3CalculaEntropiaShannon(char *, int);\n");
+    printf(" Função 3: char * ep1Passo2XOR(char *, int *, int *); \n");
+    printf(" Função 4: char * ep1Passo3Comprime(char *, int *, int); \n");
+    printf(" Função 5: char * ep1Passo4Hash(char *);\n");
+    printf(" Função 6: char * ep1Passo4HashEmHexa(char *);\n\n");
+
     return 0;
 }
-
-// https://www.delftstack.com/pt/howto/c/gettimeofday-in-c/ 
