@@ -74,7 +74,7 @@ char * ep1Passo2XOR(char * saidaPassoUm, int * vetorMagico, int * tamanho) {
 
     /* Alocação do novoBloco[] e cálculo do num_blocos: */
     char * novoBloco = malloc(sizeof(char) * (SIZE_BLOCO));
-    int num_blocos = strlen(saidaPassoUm) / SIZE_BLOCO;
+    int num_blocos = *tamanho / SIZE_BLOCO;
     int novoValor = 0;
     /* Passo principal da função 2: */
     for(int i = 0; i < num_blocos; i++) {

@@ -27,7 +27,11 @@ long double ep3CalculaEntropiaShannon(char * stringEntrada, int base) {
     probabilidades = malloc(sizeof(int) * (maior - menor + 1));
 
     for(int i = 0; i < tam; i++) {
-        probabilidades[stringEntrada[i] - menor] += 1;
+        int atual = stringEntrada[i];
+        if(atual < 0) {
+            atual = 256 + atual;
+        }
+        probabilidades[atual - menor] += 1;
     }
 
     long double resp = 0;
