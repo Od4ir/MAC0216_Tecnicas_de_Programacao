@@ -1,6 +1,0 @@
-# Coloque o token e o ID nos lugares informados sem o ’<’ e o ’>’ abaixo
-curl -s --data "text=oi" https://api.telegram.org/bot<token aqui>/sendMessage?chat_id=<ID aqui> 1>/dev/null
-
-6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag
-
-curl -s --data "text=oi" https://api.telegram.org/bot6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag/sendMessage?chat_id=1360171414 1>/dev/null
