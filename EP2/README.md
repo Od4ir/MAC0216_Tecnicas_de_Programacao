@@ -14,7 +14,7 @@
 O programa a seguir, escrito em bash script, simula um sistema de chat com modos de servidor e cliente que permite a comunicação entre terminais do seu computador. Cada modo conta com diferentes opções, sendo o modo servidor o principal para controle do sistema e o modo cliente o modo responsável por permitir simular o uso de um usuário. 
 
 Para entender o melhor o projeto, considere ler:
-- [Relatório do EP2](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP2/Relatorio_do_EP2.pdf);
+- [Relatório do EP2](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP2/Relatorio_EP2.pdf);
 - [Enunciado do EP2](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP2/EP2_Enunciado.pdf);
 
 
