@@ -18,7 +18,7 @@ O projeto consiste em dois programas escritos em 2 linguagens diferentes:Python 
 A ideia do programa é simular um algoritmo de hashing, que recebe uma entrada de tamanho variável e a mapeia para uma saída de tamanho constante. No caso, a entrada é o texto e a saída de tamanho constante é o código de 32 caracteres construído com os dígitos do sistema hexadecimal.
 
 Para melhor entendimento do trabalho, veja também:
-- [Enunciado do EP1](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP1/Enunciado_EP1.pdf);
+- [Enunciado do EP1](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP1/EP1_Enunciado.pdf);
 - [Relatório do EP1](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP1/Relatorio_EP1.pdf);
 
 ## 🔗 Dependências:
