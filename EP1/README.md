@@ -1,4 +1,4 @@
-# 🔐 EP1 - Código Hash em Assembly e Python
+# 🔐 EP1 - Hashing em Assembly e Python
 
 ## 📑 índice:
 
@@ -9,6 +9,7 @@
     - [🐍 Em Python](#-em-python)
     - [🤖 Em Assembly](#-em-assembly)
 - [🧪📋 Testes & Exemplos](#🧪📋-testes--exemplos)
+- [📕 Relatório do Trabalho]()
 
 
 ## 📄 Descrição:
@@ -56,7 +57,7 @@ e caracteres usados, provavelmente vai ser algo bem mais aleatório):
 abcdef1234567890abcdef1234567890
 </pre>
 
-Para passar um arquivo, por exemplo, 'textoexemplo.txt' como entrada, basta digitar no terminal:
+Para passar um arquivo, por exemplo, 'textoexemplo.txt' como entrada, (confira o arquivos de entrada disponível na pasta 'Entradas') basta digitar no terminal:
 ```bash
 python EP1.py < textoexemplo.txt
 ```
