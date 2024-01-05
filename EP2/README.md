@@ -1,4 +1,4 @@
-# 💬 EP2 - Sistema de Chat 
+# 💬 EP2 - Sistema de Chat em Bashscript com Bot para Telegram
 
 ## 📑 índice:
 
