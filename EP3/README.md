@@ -2,7 +2,6 @@
 
 ## 📑 Índice:
 
-- [Índice](#índice)
 - [📄 Descrição](#-descrição)
 - [🔗 Dependências](#-dependências)
 - [▶️ Executando o código](#️-executando-o-código)
@@ -23,8 +22,8 @@ do os dígitos do sistema hexadecimal, além de um programa que realiza os teste
 dessas funções e retorna o tempo que cada função levou para rodar.
 
 Para compreender melhor o projeto, considere ler:
-- [Relatório EP3]();
-- [Enunciado EP3]();
+- [Relatório EP3](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP3/Relatorio_EP3.pdf);
+- [Enunciado EP3](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP3/Enunciado_EP3.pdf);
 
 ## 🔗 Dependências:
 - **Sistema Operacional:** Ubuntu 22.04.3 LTS
