@@ -12,7 +12,7 @@ O curso teve como propósito proporcionar uma coletânea de aprendizados de téc
 ## 📥 Clonando o repositório:
 Para clonar o repositório, entre em uma pasta do seu computador e digite:
 ```bash
-git clone https://github.com/Od4ir/MAC-0216.git
+git clone https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao.git
 ```
 
 ## 📝 Trabalhos Realizados:
