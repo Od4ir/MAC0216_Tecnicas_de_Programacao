@@ -9,14 +9,17 @@
     - [🐍 Em Python](#-em-python)
     - [🤖 Em Assembly](#-em-assembly)
 - [🧪📋 Testes & Exemplos](#🧪📋-testes--exemplos)
-- [📕 Relatório do Trabalho](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP1/Relatorio_EP1.pdf)
 
 ## 📄 Descrição:
 Este projeto consiste no Exercício Programa I (EP1) da disciplina MAC 0216 - Técnicas de Programação I, orientada pelo professor Daniel Macedo Batista, no curso de Ciência da Computação do Instituto de Mamemática e Estatística da Universidade de São Paulo (IME - USP). 
 
 O projeto consiste em dois programas escritos em 2 linguagens diferentes:Python e Assembly. Os programas recebem um texto passado como entrada pelo terminal e devolvem um código de 32 caracteres utilizando os dígitos do sis- tema hexadecimal. 
 
-A ideia do programa é simular um algoritmo de hashing, que recebe uma entrada de tamanho variável e a mapeia para uma saída de tamanho constante. No caso, a entrada é o texto e a saída de tamanho constante é o código de 32 caracteres construído com os dígitos do sistema hexadecimal. 
+A ideia do programa é simular um algoritmo de hashing, que recebe uma entrada de tamanho variável e a mapeia para uma saída de tamanho constante. No caso, a entrada é o texto e a saída de tamanho constante é o código de 32 caracteres construído com os dígitos do sistema hexadecimal.
+
+Para melhor entendimento do trabalho, veja também:
+- [Enunciado do EP1](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP1/Enunciado_EP1.pdf);
+- [Relatório do EP1](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/blob/main/EP1/Relatorio_EP1.pdf);
 
 ## 🔗 Dependências:
 
