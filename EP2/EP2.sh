@@ -26,13 +26,13 @@
 # e comandos sejam realizados para esse tipo de modo.
 
 # TESTES:
-# Para testar a comunicação entre terminais diferentes façã:
+# Para testar a comunicação entre terminais diferentes faça:
 # 1) Execute o modo servidor em um terminal;
 # 2) Execute o modo cliente em dois terminais diferentes;
 # 3) Crie ao menos 2 usuários com os comandos para isso;
 # 4) Faça login com cada um deles nos dois terminais no modo cliente;
 # 5) Manda mensagens usando o nome dos usuários entre os terminais e se 
-# se divirta!
+# divirta!
 
 # DEPENDÊNCIAS:
 # O testes desse script foram feitos em um SO: Ubuntu 22.04.3 LTS
@@ -41,8 +41,8 @@
 
 LOGADOS="/tmp/logados.txt"
 USERS_INFO="/tmp/usuarios.txt"
-TOKEN="6599211463:AAGKSxJsGbU6kuqAvzJgxcKbDOrB6G2Uxag"
-CHATID="1360171414"
+TOKEN= # INSIRA O TOKEN DO SEU BOT AQUI!
+CHATID= # INSIRA O ID DO SEU CHAT AQUI;
 
 # Recebe uma mensagem e envia para o Telegram;
 function envia_msg_telegram {
