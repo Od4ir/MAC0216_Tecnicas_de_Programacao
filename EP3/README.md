@@ -1,6 +1,13 @@
 # 📚 EP3 - Reprodução do [EP1](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/tree/main/EP1) usando Bibliotecas em C
 
-## Índice
+## 📑 Índice:
+
+- [Índice](#índice)
+- [📄 Descrição](#-descrição)
+- [🔗 Dependências](#-dependências)
+- [▶️ Executando o código](#️-executando-o-código)
+- [🧪 Testes](#-testes)
+
 
 
 ## 📄 Descrição:

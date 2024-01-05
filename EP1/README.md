@@ -1,6 +1,6 @@
 # 🔐 EP1 - Hashing em Assembly e Python
 
-## 📑 índice:
+## 📑 Índice:
 
 - [📄 Descrição](#-descrição)
 - [🔗 Dependências](#-dependências)
