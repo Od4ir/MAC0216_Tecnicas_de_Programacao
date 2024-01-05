@@ -1,6 +1,6 @@
 # 🔐 EP1 - Código Hash em Assembly e Python
 
-# 📑 índice:
+## 📑 índice:
 
 - [📄 Descrição](#-descrição)
 - [🔗 Dependências](#-dependências)
@@ -39,7 +39,7 @@ ld -s -o a.out EP.o
 
 ## ▶️ Executando o código:
 
-#### 🐍 Em Python:
+### 🐍 Em Python:
 Para o código em Python, basta digitar no terminal:
 ```bash
 python EP1.py
@@ -66,7 +66,7 @@ Digite uma string:
 < Código de 32 caracteres gerado >
 </pre>
 
-#### 🤖 Em Assembly:
+### 🤖 Em Assembly:
 
 Para o código em Assembly, após gerar o executável basta digitar no 
 terminal:

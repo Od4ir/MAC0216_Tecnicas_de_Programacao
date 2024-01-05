@@ -16,7 +16,7 @@ git clone https://github.com/Od4ir/MAC-0216.git
 ```
 
 ## 📝 Trabalhos Realizados:
-- [EP1](https://github.com/Od4ir/MAC-0110/tree/main/EP1) - Código Hash em Assembly e Python;
+- [EP1](https://github.com/Od4ir/MAC0216_Tecnicas_de_Programacao/tree/main/EP1#-gerando-o-execut%C3%A1vel) - Código Hash em Assembly e Python;
 - [EP2](https://github.com/Od4ir/MAC-0110/tree/main/EP2) - Sistema de Chat em Bashscript com Bot para Telegram
 - [EP3](https://github.com/Od4ir/MAC-0110/tree/main/EP3) - EP1 utilizando Bibliotecas em C
 - [Exercícios](https://github.com/Od4ir/MAC-0110/tree/main/Exerc%C3%ADcios)
